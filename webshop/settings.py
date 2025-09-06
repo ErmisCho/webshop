@@ -10,22 +10,50 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+from dotenv import load_dotenv, dotenv_values
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# --- Select environment WITHOUT clobbering real env ---
+# 1) read DJANGO_ENV from the system env if present (e.g., WSGI)
+env_from_system = os.getenv("DJANGO_ENV")
+# 2) else read it from .env (if present) without mutating os.environ
+env_from_file = None
+if (BASE_DIR / ".env").exists():
+    env_from_file = dotenv_values(BASE_DIR / ".env").get("DJANGO_ENV")
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+ENV = (env_from_system or env_from_file or "development").lower()
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*rrs3eo@eay=udivt17p1cabwabb#yr*#-&ky*)a8k^r2z6jn*'
+# --- Load base .env (safe defaults) then env-specific file (override=True) ---
+load_dotenv(BASE_DIR / ".env", override=False)
+if ENV == "production":
+    load_dotenv(BASE_DIR / ".env.prod", override=True)
+else:
+    load_dotenv(BASE_DIR / ".env.dev", override=True)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+def _env_list(name: str) -> list[str]:
+    v = os.getenv(name, "")
+    return [x.strip() for x in v.split(",") if x.strip()]
+
+
+# ---- Core Django flags/secrets ----
+DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() == "true"
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY",
+                       "dev-only-not-secure" if DEBUG else None)
+if not DEBUG and not SECRET_KEY:
+    raise RuntimeError("DJANGO_SECRET_KEY is required in production.")
+
+ALLOWED_HOSTS = _env_list("DJANGO_ALLOWED_HOSTS")
+CSRF_TRUSTED_ORIGINS = _env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
+if not DEBUG:
+    if not ALLOWED_HOSTS:
+        raise RuntimeError("DJANGO_ALLOWED_HOSTS must be set in production.")
+    if not CSRF_TRUSTED_ORIGINS:
+        raise RuntimeError(
+            "DJANGO_CSRF_TRUSTED_ORIGINS must be set in production.")
 
 
 # Application definition
@@ -125,14 +153,12 @@ USE_TZ = True
 #     'webshop/static',
 # ]
 
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'static'
-STATICFILES_DIRS = [
-    'webshop/static',
-]
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"                 # collectstatic target
+STATICFILES_DIRS = [BASE_DIR / "webshop" / "static"]   # your source assets
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
