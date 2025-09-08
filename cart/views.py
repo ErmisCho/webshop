@@ -62,6 +62,7 @@ def remove_cart_item(request, product_id):
 
 
 def cart(request, total=0, quantity=0, cart_items=None):
+    tax, grand_total = 0, 0
     tax_percentage = 20
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
