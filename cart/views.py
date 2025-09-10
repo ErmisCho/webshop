@@ -6,7 +6,35 @@ from django.shortcuts import redirect
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 
+from django.core.mail import send_mail
+from django.conf import settings
+
+
 # Create your views here.
+
+
+def send_welcome_email(to_email, username, product_name):
+    subject = "Welcome to Our Website"
+    message = f"Hi {username},\n\nThank you for registering on our site! Feel free to get back to us regarding {product_name}.\n\nBest regards,\nThe Team"
+    email_from = settings.DEFAULT_FROM_EMAIL
+    recipient_list = [to_email]
+
+    try:
+        send_mail(subject, message, email_from, recipient_list)
+        return True
+    except Exception as e:
+        print("Error sending email:", e)
+        return False
+
+
+def test_email(request, product_name):
+    success = send_welcome_email(
+        "example@gmail.com", "Example", product_name)
+    print("Email function executed.")
+    if success:
+        print("Email sent successfully!")
+        return HttpResponse("Email sent successfully!")
+    return HttpResponse("Failed to send email.")
 
 
 def _cart_id(request):
@@ -38,6 +66,8 @@ def add_cart(request, product_id):
         )
         cart_item.save()
     # return HttpResponse(cart_item.product)
+    # test_email(request, product.product_name)
+
     return redirect('cart')
 
 
