@@ -29,29 +29,47 @@
     <!-- custom javascript -->
     <script src="{% static 'js/script.js' %}" type="text/javascript"></script>
 
-    <!-- PayPal Script -->
-    <script src="https://www.paypal.com/sdk/js?client-id=AZQLTo9k3fLDwf-STBrNjLN7Qs6_NiiZ44LShiYdSSJMsUHwQxaJyYnroGbgxKclS8mgaAkxQ7vCSRCX&currency=EUR"></script>
+    {# PayPal SDK only when NOT in inquiry mode #}
+    {% if not SHOP_ENQUIRY_MODE %}
+      <script src="https://www.paypal.com/sdk/js?client-id=AZQLTo9k3fLDwf-STBrNjLN7Qs6_NiiZ44LShiYdSSJMsUHwQxaJyYnroGbgxKclS8mgaAkxQ7vCSRCX&currency=EUR"></script>
+    {% endif %}
 
     <script type="text/javascript">
-        /// some script
-
-        // jquery ready start
         $(document).ready(function () {
-            // jQuery code
-
+            // custom JS
         });
-        // jquery end
     </script>
 
+    {# Hide price-like elements globally when in inquiry mode #}
+    {% if SHOP_ENQUIRY_MODE %}
+    <style>
+      .inquiry-mode .price,
+      .inquiry-mode .unit-price,
+      .inquiry-mode .subtotal,
+      .inquiry-mode .total,
+      .inquiry-mode .grand-total,
+      .inquiry-mode .old-price,
+      .inquiry-mode .strike-price,
+      .inquiry-mode [data-price],
+      .inquiry-mode [data-subtotal],
+      .inquiry-mode [data-total],
+      .inquiry-mode .currency,
+      .inquiry-mode .tax-amount {
+        display: none !important;
+      }
+    </style>
+    {% endif %}
 </head>
 
-<body>
+<body{% if SHOP_ENQUIRY_MODE %} class="inquiry-mode"{% endif %}>
 
     {% include 'includes/navbar.html' %}
-
 
     {% block content %}
     <!-- content -->
     {% endblock %}
 
     {% include 'includes/footer.html' %}
+
+</body>
+</html>

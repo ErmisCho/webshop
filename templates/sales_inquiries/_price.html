@@ -1,0 +1,7 @@
+{# templates/sales_inquiries/_price.html #}
+{% if SHOP_ENQUIRY_MODE %}
+  {# Show a label when prices are hidden. Leave empty string to show nothing. #}
+  {% if label_when_hidden %}<span class="text-muted">{{ label_when_hidden }}</span>{% endif %}
+{% else %}
+  <span class="price">{{ value }}</span>
+{% endif %}

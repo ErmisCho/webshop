@@ -1,0 +1,32 @@
+<!doctype html><html><body>
+  <h2>New sales inquiry</h2>
+
+  <p><strong>From:</strong> {{ name|default:"Guest" }} &lt;{{ email }}&gt;</p>
+  <p><strong>Phone:</strong> {{ phone|default:"—" }}</p>
+
+  {% if order_number %}
+    <p><strong>Order #:</strong> {{ order_number }}</p>
+  {% endif %}
+  {% if order_note %}
+    <p><strong>Order note:</strong><br>{{ order_note|linebreaks }}</p>
+  {% endif %}
+  {% if message %}
+    <p><strong>Message:</strong><br>{{ message|linebreaks }}</p>
+  {% endif %}
+
+  <h3>Items</h3>
+  <ul>
+    {% for item in cart_items %}
+      <li>
+        <strong>{{ item.product }}</strong> × {{ item.quantity }}
+        {% if item.variations %}
+          <ul>
+            {% for v in item.variations %}
+              <li>{{ v.category }}: {{ v.value }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</body></html>

@@ -69,6 +69,14 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 DEFAULT_FROM_EMAIL = os.getenv(
     "DEFAULT_FROM_EMAIL", EMAIL_HOST_USER or "webmaster@localhost")
 
+
+# sales_inquiries settings
+SHOP_ENQUIRY_MODE = os.getenv("SHOP_ENQUIRY_MODE", "false").lower() == "true"
+SALES_INQUIRY_EMAIL_TO = os.getenv(
+    "SALES_INQUIRY_EMAIL_TO")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -83,6 +91,7 @@ INSTALLED_APPS = [
     'store',
     'cart',
     'orders',
+    'sales_inquiries',
 ]
 
 MIDDLEWARE = [
@@ -93,6 +102,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'sales_inquiries.middleware.BlockPaymentsInInquiryMode',
 ]
 
 ROOT_URLCONF = 'webshop.urls'
@@ -110,6 +120,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'category.context_processors.menu_links',
                 'cart.context_processors.counter',
+                'sales_inquiries.context_processors.shop_flags',
             ],
         },
     },

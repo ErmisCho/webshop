@@ -81,7 +81,9 @@
                             <tr class="small text-uppercase">
                                 <th scope="col">Product</th>
                                 <th scope="col" width="120">Quantity</th>
-                                <th scope="col" width="120">Price</th>
+                                {% if not SHOP_ENQUIRY_MODE %}
+                                  <th scope="col" width="120">Price</th>
+                                {% endif %}
                             </tr>
                         </thead>
                         <tbody>
@@ -113,12 +115,14 @@
                                     <!-- col.// -->
                                     <label for="">{{cart_item.quantity}}</label>
                                 </td>
+                                {% if not SHOP_ENQUIRY_MODE %}
                                 <td>
                                     <div class="price-wrap">
                                         <var class="price">{{ cart_item.sub_total }}</var>
                                         <small class="text-muted"> $ {{ cart_item.product.price }} each </small>
                                     </div> <!-- price-wrap .// -->
                                 </td>
+                                {% endif %}
                             </tr>
                             {% endfor %}
                         </tbody>

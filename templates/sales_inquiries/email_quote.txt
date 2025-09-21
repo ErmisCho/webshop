@@ -1,0 +1,20 @@
+New sales inquiry
+
+From: {{ name|default:"Guest" }} <{{ email }}>
+Phone: {{ phone|default:"—" }}
+{% if order_number %}Order #: {{ order_number }}{% endif %}
+{% if order_note %}
+Order note:
+{{ order_note }}
+{% endif %}
+{% if message %}
+Message:
+{{ message }}
+{% endif %}
+
+Items:
+{% for item in cart_items %}
+- {{ item.product }} x{{ item.quantity }}
+  {% for v in item.variations %}• {{ v.category }}: {{ v.value }}
+  {% endfor %}
+{% endfor %}

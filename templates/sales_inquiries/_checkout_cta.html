@@ -1,0 +1,23 @@
+{# templates/sales_inquiries/_checkout_cta.html #}
+{% if SHOP_ENQUIRY_MODE %}
+  {% if not request.user.is_authenticated %}
+    <div class="p-3 border rounded bg-light">
+      <p class="mb-2">Please sign in to send an inquiry.</p>
+      <a class="btn btn-primary"
+         href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}">
+        Sign in to continue
+      </a>
+    </div>
+  {% else %}
+    <form action="{% url 'sales_inquiries:submit' %}" method="post" class="space-y-2 mb-0">
+      {% csrf_token %}
+      {% if order %}
+        <input type="hidden" name="order_number" value="{{ order.order_number }}">
+        <input type="hidden" name="order_note"   value="{{ order.order_note }}">
+      {% endif %}
+      <button type="submit" class="btn btn-primary d-block mx-auto w-100">Send Inquiry to Sales</button>
+    </form>
+  {% endif %}
+{% else %}
+  {% include "payments/_paypal_button.html" %}
+{% endif %}
