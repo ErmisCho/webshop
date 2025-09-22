@@ -29,3 +29,4 @@ python-dotenv==1.1.1
 sqlparse==0.5.3
 tzdata==2025.2
 requests
+django-anymail>=13.1

@@ -76,6 +76,16 @@ SALES_INQUIRY_EMAIL_TO = os.getenv(
     "SALES_INQUIRY_EMAIL_TO")
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
 
+if ENV == "production":
+    EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
+    DEFAULT_FROM_EMAIL = os.getenv(
+        "EMAIL_FROM", DEFAULT_FROM_EMAIL or "webmaster@localhost")
+    SERVER_EMAIL = DEFAULT_FROM_EMAIL
+    ANYMAIL = {
+        "SENDGRID_API_KEY": os.getenv("SENDGRID_API_KEY"),
+        "SENDGRID_API_URL": "https://api.sendgrid.com/v3",
+    }
+
 
 # Application definition
 
@@ -92,6 +102,7 @@ INSTALLED_APPS = [
     'cart',
     'orders',
     'sales_inquiries',
+    'anymail',
 ]
 
 MIDDLEWARE = [
