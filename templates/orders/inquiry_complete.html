@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section-content padding-y">
+  <div class="container">
+    <h3>Thank you for your inquiry!</h3>
+    <p>Your inquiry number is <strong>{{ order.order_number }}</strong>.</p>
+
+    <div class="mt-4">
+      {% for item in ordered_products %}
+        <div class="media align-items-center mb-3">
+          <img src="{{ item.product.images.url }}" class="img-sm mr-3" alt="{{ item.product.product_name }}">
+
+          <div class="media-body">
+            <div class="font-weight-bold">
+              {{ item.product.product_name }} &times; {{ item.quantity }}
+            </div>
+
+            {% if item.variations.all %}
+              <div class="mt-1">
+                {% for v in item.variations.all %}
+                  <div class="d-inline-flex align-items-center mr-3 mb-1">
+                    {% if v.image %}
+                      <img src="{{ v.image.url }}" class="img-xs mr-1" style="width:28px;height:28px;object-fit:cover;border-radius:4px;" alt="{{ v.variation_value }}">
+                    {% elif v.photo %}
+                      <img src="{{ v.photo.url }}" class="img-xs mr-1" style="width:28px;height:28px;object-fit:cover;border-radius:4px;" alt="{{ v.variation_value }}">
+                    {% endif %}
+
+                    <small class="text-muted">
+                      {{ v.variation_category|capfirst }}: {{ v.variation_value|capfirst }}
+                    </small>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <hr>
+      {% empty %}
+        <p>No items found for this inquiry.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

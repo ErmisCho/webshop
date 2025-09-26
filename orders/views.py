@@ -1,3 +1,6 @@
+import os
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
 import datetime
 import json
 from django.http import HttpResponse, JsonResponse
@@ -9,6 +12,10 @@ from .models import Order, OrderProduct, Payment
 from .forms import OrderForm
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+from django.views.decorators.http import require_POST
+from django.db import transaction
+import logging
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 
@@ -167,3 +174,129 @@ def order_complete(request):
         return render(request, 'orders/order_complete.html', context)
     except (Payment.DoesNotExist, Order.DoesNotExist):
         return redirect('home')
+
+
+@login_required
+@require_POST
+@transaction.atomic
+def submit_inquiry(request):
+    from django.contrib import messages
+    from django.template.loader import render_to_string
+    from django.core.mail import EmailMessage
+    from django.urls import reverse
+
+    current_user = request.user
+    order_number = request.POST.get("order_number")
+
+    if not order_number:
+        messages.error(request, "Missing order number for inquiry.")
+        return redirect("checkout")
+
+    try:
+        order = Order.objects.get(
+            user=current_user, is_ordered=False, order_number=order_number)
+    except Order.DoesNotExist:
+        messages.error(request, "We couldn't find your pending inquiry.")
+        return redirect("checkout")
+
+    cart_items = CartItem.objects.filter(user=current_user)
+    if not cart_items.exists():
+        messages.error(request, "Your cart is empty.")
+        return redirect("store")
+
+    # Idempotency: if lines already exist, just show complete
+    if OrderProduct.objects.filter(order=order).exists():
+        return redirect(f"{reverse('orders:inquiry_complete')}?order_number={order.order_number}")
+
+    for item in cart_items.select_related("product"):
+        op = OrderProduct.objects.create(
+            order=order,
+            user=current_user,
+            product=item.product,
+            quantity=item.quantity,
+            product_price=item.product.price,
+            ordered=False,
+            inquired=True,
+        )
+        if item.variations.exists():
+            op.variations.set(item.variations.all())
+
+    order.is_inquired = True
+    order.is_ordered = False
+    order.save(update_fields=["is_inquired", "is_ordered"])
+
+    cart_items.delete()
+
+    # send confirmation email to customer (already present)
+    try:
+        ordered_products = (
+            OrderProduct.objects
+            .filter(order=order)
+            .select_related("product")
+            .prefetch_related("variations")
+        )
+        mail_subject = "Thank you for your inquiry"
+        message = render_to_string("orders/order_received_email.html", {
+            "user": current_user,
+            "order": order,
+            "ordered_products": ordered_products,
+        })
+        msg = EmailMessage(mail_subject, message, to=[order.email])
+        msg.content_subtype = "html"
+        msg.send(fail_silently=False)
+    except Exception:
+        pass
+
+    # === NEW: send inquiry details to sales team ===
+    try:
+        sales_to = getattr(settings, "SALES_INQUIRY_EMAIL_TO",
+                           None) or os.getenv("SALES_INQUIRY_EMAIL_TO")
+        print(f"before sales_to: {sales_to}")
+        if sales_to:
+            # gather line items with variations
+            ordered_products = OrderProduct.objects.filter(
+                order=order).select_related("product").prefetch_related("variations")
+
+            sales_subject = f"New inquiry #{order.order_number} from {order.full_name()}"
+            sales_html = render_to_string("sales_inquiries/email_quote.html", {
+                "order": order,
+                "ordered_products": ordered_products,
+            })
+            sales_msg = EmailMessage(
+                subject=sales_subject,
+                body=sales_html,
+                to=[sales_to],
+                # so sales can reply directly to customer
+                reply_to=[order.email] if order.email else None,
+            )
+            sales_msg.content_subtype = "html"  # render as HTML
+            sales_msg.send()
+            logger.info("Sales inquiry email sent to %s for %s",
+                        sales_to, order.order_number)
+        # else: if not configured, we silently skip
+        else:
+            logger.warning(
+                "SALES_INQUIRY_EMAIL_TO not configured; skipping sales email for %s", order.order_number)
+            print("wen to else")
+
+    except Exception as e:
+        print(f"There is an exception: {e}")
+
+    return redirect(f"{reverse('inquiry_complete')}?order_number={order.order_number}")
+
+
+def inquiry_complete(request):
+    order_number = request.GET.get("order_number")
+    try:
+        order = Order.objects.get(order_number=order_number, is_inquired=True)
+    except Order.DoesNotExist:
+        return redirect("home")
+
+    ordered_products = OrderProduct.objects.filter(order=order)
+    subtotal = sum(i.product_price * i.quantity for i in ordered_products)
+
+    return render(request, "orders/inquiry_complete.html", {
+        "order": order,
+        "ordered_products": ordered_products,
+        "subtotal": subtotal,
+    })

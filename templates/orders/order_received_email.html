@@ -1,9 +1,37 @@
-{% autoescape off %}
+<!doctype html>
+<html>
+  <body style="font-family: Arial, Helvetica, sans-serif; color:#333;">
+    <h2>Thank you for your inquiry!</h2>
 
-Hi {{user.first_name}},
+    <p>Dear {{ order.first_name }},</p>
+    <p>We have received your inquiry. Our sales team will review it and get back to you shortly.</p>
 
-Your order has been received!
+    <h3>Inquiry Details</h3>
+    <p>
+      <strong>Name:</strong> {{ order.full_name }}<br>
+      <strong>Email:</strong> {{ order.email }}<br>
+      <strong>Phone:</strong> {{ order.phone }}<br>
+      <strong>Inquiry #:</strong> {{ order.order_number }}<br>
+      {% if order.order_note %}
+        <strong>Note:</strong> {{ order.order_note }}<br>
+      {% endif %}
+    </p>
 
-Order Number: {{order.order_number}}
+    <h3>Items</h3>
+    <ul>
+      {% for item in ordered_products %}
+        <li>
+          {{ item.product.product_name }} × {{ item.quantity }}<br>
+          {% for v in item.variations.all %}
+            <small>{{ v.variation_category|capfirst }}: {{ v.variation_value|capfirst }}</small><br>
+          {% endfor %}
+        </li>
+      {% endfor %}
+    </ul>
 
-{% endautoescape %}
+    <p style="margin-top:20px; font-size: 0.9em; color: #666;">
+      This email is a confirmation that we’ve received your inquiry.
+      Our team will be in touch via the contact details you provided.
+    </p>
+  </body>
+</html>

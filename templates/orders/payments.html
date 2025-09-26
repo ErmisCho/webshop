@@ -125,7 +125,18 @@
             {% endif %}
 
             <div class="text-center">
-              {% checkout_cta %}
+              {% if SHOP_ENQUIRY_MODE %}
+                <form method="post" action="{% url 'submit_inquiry' %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="order_number" value="{{ order.order_number }}">
+                  <input type="hidden" name="email" value="{{ order.email }}">
+                  <button type="submit" class="btn btn-primary btn-block">
+                    Send inquiry to sales
+                  </button>
+                </form>
+              {% else %}
+                {% checkout_cta %}
+              {% endif %}
             </div>
           </div>
         </div>

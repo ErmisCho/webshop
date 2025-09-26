@@ -1,32 +1,55 @@
-<!doctype html><html><body>
-  <h2>New sales inquiry</h2>
+{% load static %}
+<!doctype html>
+<html>
+  <body style="font-family:Arial,Helvetica,sans-serif;">
+    <h2>New Inquiry #{{ order.order_number }}</h2>
+    <p>
+      <strong>From:</strong> {{ order.full_name }} &lt;{{ order.email }}&gt;<br>
+      <strong>Phone:</strong> {{ order.phone }}<br>
+      <strong>Address:</strong> {{ order.full_address }}, {{ order.city }}, {{ order.state }}, {{ order.country }}
+    </p>
 
-  <p><strong>From:</strong> {{ name|default:"Guest" }} &lt;{{ email }}&gt;</p>
-  <p><strong>Phone:</strong> {{ phone|default:"—" }}</p>
+    {% if order.order_note %}
+      <p><strong>Note:</strong> {{ order.order_note }}</p>
+    {% endif %}
 
-  {% if order_number %}
-    <p><strong>Order #:</strong> {{ order_number }}</p>
-  {% endif %}
-  {% if order_note %}
-    <p><strong>Order note:</strong><br>{{ order_note|linebreaks }}</p>
-  {% endif %}
-  {% if message %}
-    <p><strong>Message:</strong><br>{{ message|linebreaks }}</p>
-  {% endif %}
+    <h3>Items</h3>
+    <table cellpadding="6" cellspacing="0" border="0" style="border-collapse:collapse;">
+      <thead>
+        <tr>
+          <th align="left">Product</th>
+          <th align="left">Qty</th>
+          <th align="left">Options</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in ordered_products %}
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <img src="{{ item.product.images.url }}" alt="" width="48" height="48" style="object-fit:cover;border-radius:4px;">
+                <div>{{ item.product.product_name }}</div>
+              </div>
+            </td>
+            <td>{{ item.quantity }}</td>
+            <td>
+              {% if item.variations.all %}
+                {% for v in item.variations.all %}
+                  <div>
+                    <strong>{{ v.variation_category|capfirst }}:</strong> {{ v.variation_value|capfirst }}
+                  </div>
+                {% endfor %}
+              {% else %}
+                —
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
 
-  <h3>Items</h3>
-  <ul>
-    {% for item in cart_items %}
-      <li>
-        <strong>{{ item.product }}</strong> × {{ item.quantity }}
-        {% if item.variations %}
-          <ul>
-            {% for v in item.variations %}
-              <li>{{ v.category }}: {{ v.value }}</li>
-            {% endfor %}
-          </ul>
-        {% endif %}
-      </li>
-    {% endfor %}
-  </ul>
-</body></html>
+    <p style="margin-top:16px;color:#666;">
+      This was sent automatically by the webshop inquiry system.
+    </p>
+  </body>
+</html>
