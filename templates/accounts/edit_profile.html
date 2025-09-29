@@ -1,83 +1,126 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
+
+<style>
+  /* Avatar styles */
+  .avatar-preview{
+    width:120px; height:120px; object-fit:cover; border-radius:50%;
+  }
+  .avatar-wrap{
+    position:relative; display:inline-block; cursor:pointer;
+  }
+  .avatar-overlay{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.2rem; color:#fff; background:rgba(0,0,0,.45);
+    border-radius:50%; opacity:0; transition:.2s;
+  }
+  .avatar-wrap:hover .avatar-overlay{ opacity:1; }
+
+  /* Force-hide the file input (independent of widget classes) */
+  #id_profile_picture{ display:none; }
+</style>
 
 <!-- ========================= SECTION CONTENT ========================= -->
 <section class="section-conten padding-y bg">
 
-{% include 'includes/alerts.html' %}
+  {% include 'includes/alerts.html' %}
 
-<div class="container">
-	<div class="row">
-	{% include 'includes/dashboard_sidebar.html' %}
-	<main class="col-md-9">
-		<article class="card">
-		<header class="card-header">
-			<strong class="d-inline-block mr-3">Edit your profile</strong>
-		</header>
-		<div class="card-body">
-			<div class="text-right">
-				<img src="{{userprofile.profile_picture.url}}" alt="Profile Picture" width="100" style="border-radius:50px;">
-			</div>
-			<div class="row">
+  <div class="container">
+    <div class="row">
+      {% include 'includes/dashboard_sidebar.html' %}
+      <main class="col-md-9">
+        <article class="card">
+          <header class="card-header">
+            <strong class="d-inline-block mr-3">Edit your profile</strong>
+          </header>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <form action="{% url 'edit_profile' %}" method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
 
-				<div class="col-md-12">
-					<form action="{% url 'edit_profile' %}" method="POST" enctype="multipart/form-data">
-						{% csrf_token %}
-						<div class="form-row">
-							<div class="form-group col-md-6">
-								<label>First Name</label>
-								{{user_form.first_name}}
-							</div>
-							<div class="form-group col-md-6">
-								<label>Last Name</label>
-								{{user_form.last_name}}
-							</div>
-						</div>
-						<div class="form-row">
-							<div class="form-group col-md-6">
-								<label>Phone Number</label>
-								{{user_form.phone_number}}
-							</div>
-							<div class="form-group col-md-6">
-								<label>Profile Picture</label>
-								{{profile_form.profile_picture}}
-							</div>
-						</div>
-						<div class="form-group">
-							<label>Address Line 1</label>
-							{{profile_form.address_line_1}}
-						</div>
-						<div class="form-group">
-							<label>Address Line 2</label>
-							{{profile_form.address_line_2}}
-						</div>
-						<div class="form-row">
-							<div class="form-group col-md-4">
-								<label>City</label>
-								{{profile_form.city}}
-							</div>
-							<div class="form-group col-md-4">
-								<label>State</label>
-								{{profile_form.state}}
-							</div>
-							<div class="form-group col-md-4">
-								<label>Country</label>
-								{{profile_form.country}}
-							</div>
-						</div>
-						<input type="submit" value="Save" class="btn btn-primary">
-					</form>
-				</div>
-			</div> <!-- row.// -->
-		</div> <!-- card-body .// -->
-		</article> <!-- order-group.// -->
-	</main>
-</div> <!-- row.// -->
-</div>
+                  <!-- Profile picture block -->
+                  <div class="mb-4 text-center">
+                    <label for="id_profile_picture" class="avatar-wrap" role="button" aria-label="Change profile picture">
+                      <img
+                        src="{% if userprofile.profile_picture %}{{ userprofile.profile_picture.url }}{% else %}{% static 'images/avatars/avatar-default.png' %}{% endif %}"
+                        alt="Profile Picture"
+                        class="avatar-preview border d-block mx-auto"
+                      >
+                      <div class="avatar-overlay">
+                        <i class="fa fa-camera"></i>
+                      </div>
+                    </label>
 
+                    {{ profile_form.profile_picture }} {# hidden by CSS above #}
+                    <div class="form-text text-muted small">Click the photo to change • JPG/PNG, max 5&nbsp;MB</div>
+                  </div>
 
+                  <!-- User info -->
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label>First Name</label>
+                      {{ user_form.first_name }}
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label>Last Name</label>
+                      {{ user_form.last_name }}
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group col-md-12">
+                      <label>Phone Number</label>
+                      {{ user_form.phone_number }}
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Address Line 1</label>
+                    {{ profile_form.address_line_1 }}
+                  </div>
+                  <div class="form-group">
+                    <label>Address Line 2</label>
+                    {{ profile_form.address_line_2 }}
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group col-md-4">
+                      <label>City</label>
+                      {{ profile_form.city }}
+                    </div>
+                    <div class="form-group col-md-4">
+                      <label>State</label>
+                      {{ profile_form.state }}
+                    </div>
+                    <div class="form-group col-md-4">
+                      <label>Country</label>
+                      {{ profile_form.country }}
+                    </div>
+                  </div>
+
+                  <input type="submit" value="Save" class="btn btn-primary">
+                </form>
+              </div>
+            </div> <!-- row.// -->
+          </div> <!-- card-body .// -->
+        </article> <!-- card.// -->
+      </main>
+    </div> <!-- row.// -->
+  </div>
 </section>
 <!-- ========================= SECTION CONTENT END// ========================= -->
+
+<script>
+  // Instant preview after selecting a file
+  document.getElementById('id_profile_picture')?.addEventListener('change', (e) => {
+    const [file] = e.target.files || [];
+    if (!file) return;
+    const img = document.querySelector('.avatar-preview');
+    if (img) img.src = URL.createObjectURL(file);
+  });
+</script>
 
 {% endblock %}

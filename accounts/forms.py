@@ -48,15 +48,27 @@ class UserForm(forms.ModelForm):
 
 
 class UserProfileForm(forms.ModelForm):
-    profile_picture = forms.ImageField(required=False, error_messages={
-                                       'invalid': ("Image files only")}, widget=forms.FileInput)
+    profile_picture = forms.ImageField(
+        required=False,
+        error_messages={'invalid': "Image files only"},
+        widget=forms.FileInput(attrs={
+            "class": "visually-hidden",
+            "accept": "image/*",
+            "id": "id_profile_picture",
+        })
+    )
 
     class Meta:
         model = UserProfile
-        fields = ('address_line_1', 'address_line_2', 'city',
-                  'state', 'country', 'profile_picture')
+        fields = (
+            'address_line_1', 'address_line_2', 'city',
+            'state', 'country', 'profile_picture'
+        )
 
     def __init__(self, *args, **kwargs):
-        super(UserProfileForm, self).__init__(*args, **kwargs)
-        for field in self.fields:
-            self.fields[field].widget.attrs['class'] = 'form-control'
+        super().__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            if name == "profile_picture":
+                continue
+            existing = field.widget.attrs.get("class", "")
+            field.widget.attrs["class"] = (existing + " form-control").strip()
