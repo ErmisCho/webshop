@@ -251,7 +251,6 @@ def submit_inquiry(request):
     try:
         sales_to = getattr(settings, "SALES_INQUIRY_EMAIL_TO",
                            None) or os.getenv("SALES_INQUIRY_EMAIL_TO")
-        print(f"before sales_to: {sales_to}")
         if sales_to:
             # gather line items with variations
             ordered_products = OrderProduct.objects.filter(

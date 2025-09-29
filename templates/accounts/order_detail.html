@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+{# ---------------- PRINT-ONLY STYLES, SCOPED TO THIS PAGE ---------------- #}
+<style media="print">
+  @page { size: A4; margin: 15mm; }
+  html, body { background: #fff !important; }
+  body { font-size: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  /* Hide site chrome when printing */
+  header, nav, .navbar, .site-footer, footer,
+  .order-detail .d-print-none { display: none !important; }
+
+  /* Expand content area on paper */
+  .order-detail.doc-wrapper,
+  .order-detail.container {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+  }
+
+  /* Show print header; hide screen-only header */
+  .order-detail .print-header { display: block !important; }
+  .order-detail .screen-header { display: none !important; }
+
+  /* Letterhead */
+  .order-detail .print-header {
+    text-align: center;
+    margin-bottom: 10mm;
+  }
+  .order-detail .print-header .brand {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .order-detail .print-header img { max-height: 36px; }
+  .order-detail .print-header .company {
+    font-weight: 700; font-size: 16px;
+  }
+  .order-detail .print-header .meta {
+    margin-top: 4px; font-size: 11px; color: #444;
+  }
+  .order-detail .doc-title {
+    font-weight: 700; font-size: 18px; margin: 8mm 0 4mm;
+    border-bottom: 2px solid #000; display: inline-block; padding-bottom: 2mm;
+  }
+
+  /* Meta blocks as neat two-column grid */
+  .order-detail .print-meta {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10mm; margin-bottom: 8mm;
+  }
+  .order-detail .box {
+    border: 1px solid #000; padding: 6mm; border-radius: 0;
+  }
+  .order-detail .box h6 { margin: 0 0 3mm; font-size: 12px; font-weight: 700; }
+  .order-detail .box ul { padding: 0; margin: 0; list-style: none; }
+  .order-detail .box li { margin: 0; line-height: 1.5; }
+
+  /* Tables for print */
+  .order-detail table { width: 100%; border-collapse: collapse !important; }
+  .order-detail thead { display: table-header-group; }
+  .order-detail tfoot { display: table-footer-group; }
+  .order-detail th, .order-detail td {
+    border: 1px solid #000 !important; padding: 6px 8px !important; vertical-align: top;
+  }
+  .order-detail thead th { background: #eee !important; }
+  .order-detail tr, .order-detail td, .order-detail th { page-break-inside: avoid; break-inside: avoid; }
+
+  /* Thumbnails a bit smaller on paper, no border */
+  .order-detail .item-thumb { width: 64px; height: 64px; border: 0; }
+
+  /* Footer/signature section */
+  .order-detail .signatures {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12mm; margin-top: 12mm;
+  }
+  .order-detail .sig-line {
+    border-top: 1px solid #000; margin-top: 18mm; height: 0;
+  }
+  .order-detail .fine { font-size: 10px; color: #444; margin-top: 4mm; }
+
+  /* Links render like normal text */
+  .order-detail a:link, .order-detail a:visited { color: #000; text-decoration: none; }
+</style>
+
+{# ---------------- SCREEN STYLES (UNCHANGED VISUALS) ---------------- #}
+<style>
+  .item-thumb {
+    width: 84px;
+    height: 84px;
+    object-fit: cover;
+    border-radius: .375rem;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+  }
+  .badge-soft {
+    padding: .35rem .6rem;
+    border-radius: .5rem;
+    font-weight: 600;
+    font-size: .875rem;
+  }
+  .status-requested { background: #fff3cd; color: #664d03; }
+  .status-accepted  { background: #cfe2ff; color: #084298; }
+  .status-completed { background: #d1e7dd; color: #0f5132; }
+  .status-cancelled { background: #f8d7da; color: #842029; }
+  .muted { color: #6c757d; }
+  .doc-wrapper { margin: 40px auto; max-width: 1024px; background: #f8f9fa; padding: 32px; border-radius: 10px; }
+  /* Print header is hidden on screen */
+  .print-header { display: none; }
+</style>
+
+<div class="container doc-wrapper order-detail">
+  {# -------- PRINT LETTERHEAD (print-only) -------- #}
+  <div class="print-header">
+    <div class="brand">
+      <img src="{% static 'images/logo.png' %}" alt="Logo">
+      <span class="company">GreatKart</span>
+    </div>
+    <div class="meta">Street name 123, Avenue abc · +879-332-9375 · info@pixelsz.io</div>
+    <div class="doc-title">Inquiry</div>
+  </div>
+
+  {# -------- SCREEN HEADER (visible on website) -------- #}
+  <div class="row align-items-center mb-3 screen-header">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-3">
+        <img src="{% static 'images/logo.png' %}" alt="Logo" style="max-height: 42px;">
+        {% if order.status == "Requested" %}
+          <span class="badge-soft status-requested">Status: Requested</span>
+        {% elif order.status == "Accepted" %}
+          <span class="badge-soft status-accepted">Status: Accepted</span>
+        {% elif order.status == "Completed" %}
+          <span class="badge-soft status-completed">Status: Completed</span>
+        {% elif order.status == "Cancelled" %}
+          <span class="badge-soft status-cancelled">Status: Cancelled</span>
+        {% else %}
+          <span class="badge-soft muted">Status: {{ order.status }}</span>
+        {% endif %}
+      </div>
+
+      <div class="d-print-none">
+        <a href="{% url 'my_orders' %}" class="btn btn-outline-secondary btn-sm me-2">Back to My Orders</a>
+        <button class="btn btn-primary btn-sm" onclick="window.print()">Print</button>
+      </div>
+    </div>
+  </div>
+
+  {# -------- CUSTOMER & INQUIRY INFO -------- #}
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <h6 class="muted mb-2">Requested By</h6>
+      <ul class="list-unstyled mb-0">
+        <li class="fw-semibold">{{ order.full_name }}</li>
+        <li>{{ order.full_address }}</li>
+        <li>{{ order.city }}{% if order.state %}, {{ order.state }}{% endif %}</li>
+        <li>{{ order.country }}</li>
+        {% if order.phone %}<li>{{ order.phone }}</li>{% endif %}
+        {% if order.email %}<li>{{ order.email }}</li>{% endif %}
+      </ul>
+    </div>
+
+    <div class="col-lg-6">
+      <h6 class="muted mb-2">Inquiry Details</h6>
+      <dl class="row mb-0">
+        <dt class="col-sm-4">Inquiry #</dt>
+        <dd class="col-sm-8">{{ order.order_number }}</dd>
+        <dt class="col-sm-4">Date</dt>
+        <dd class="col-sm-8">{{ order.created_at|date:"Y-m-d H:i" }}</dd>
+        {% if order.order_note %}
+          <dt class="col-sm-4">Note</dt>
+          <dd class="col-sm-8">{{ order.order_note }}</dd>
+        {% endif %}
+      </dl>
+    </div>
+  </div>
+
+  {# -------- PRINT META BLOCKS (official look) -------- #}
+  <div class="print-meta">
+    <div class="box">
+      <h6>Requested By</h6>
+      <ul>
+        <li>{{ order.full_name }}</li>
+        <li>{{ order.full_address }}</li>
+        <li>{{ order.city }}{% if order.state %}, {{ order.state }}{% endif %}</li>
+        <li>{{ order.country }}</li>
+        {% if order.phone %}<li>{{ order.phone }}</li>{% endif %}
+        {% if order.email %}<li>{{ order.email }}</li>{% endif %}
+      </ul>
+    </div>
+    <div class="box">
+      <h6>Inquiry Details</h6>
+      <ul>
+        <li><strong>No.:</strong> {{ order.order_number }}</li>
+        <li><strong>Date:</strong> {{ order.created_at|date:"Y-m-d H:i" }}</li>
+        {% if order.order_note %}<li><strong>Note:</strong> {{ order.order_note }}</li>{% endif %}
+        <li><strong>Status:</strong> {{ order.status }}</li>
+      </ul>
+    </div>
+  </div>
+
+  {# -------- ITEMS -------- #}
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+          <thead class="table-light">
+            <tr>
+              <th class="text-center" style="width: 15%;">Product</th>
+              <th class="text-start"  style="width: 65%;">Details</th>
+              <th class="text-center" style="width: 20%;">Qty</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in order_detail %}
+              <tr>
+                <td class="text-center">
+                  {% if item.product.get_url %}
+                    <a href="{{ item.product.get_url }}" aria-label="Open {{ item.product.product_name }}">
+                      {% if item.product.images %}
+                        <img class="item-thumb" src="{{ item.product.images.url }}" alt="{{ item.product.product_name }}">
+                      {% else %}
+                        <img class="item-thumb" src="{% static 'images/placeholder.png' %}" alt="No image">
+                      {% endif %}
+                    </a>
+                  {% else %}
+                    {% if item.product.images %}
+                      <img class="item-thumb" src="{{ item.product.images.url }}" alt="{{ item.product.product_name }}">
+                    {% else %}
+                      <img class="item-thumb" src="{% static 'images/placeholder.png' %}" alt="No image">
+                    {% endif %}
+                  {% endif %}
+                </td>
+                <td>
+                  <div class="fw-semibold">{{ item.product.product_name }}</div>
+                  {% if item.variations.all %}
+                    <div class="muted small mt-1">
+                      {% for i in item.variations.all %}
+                        {{ i.variation_category|capfirst }}: {{ i.variation_value|capfirst }}{% if not forloop.last %}<span class="mx-1">•</span>{% endif %}
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </td>
+                <td class="text-center">{{ item.quantity }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="3" class="text-center muted">No items.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="alert alert-info mt-3 mb-0 d-print-none">
+        This is an inquiry. Our team will contact you with pricing and availability details.
+      </div>
+    </div>
+  </div>
+
+  <div class="fine">
+    This document is an inquiry and not a tax invoice. Prices and availability will be provided separately and may change until confirmed.
+  </div>
+</div>
+
+{% endblock %}

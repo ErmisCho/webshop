@@ -19,7 +19,7 @@ class Payment(models.Model):
 
 class Order(models.Model):
     STATUS = (
-        ('New', 'New'),
+        ('Requested', 'Requested'),
         ('Accepted', 'Accepted'),
         ('Completed', 'Completed'),
         ('Cancelled', 'Cancelled'),
@@ -41,7 +41,8 @@ class Order(models.Model):
     order_note = models.CharField(max_length=100, blank=True)
     order_total = models.FloatField()
     tax = models.FloatField()
-    status = models.CharField(max_length=10, choices=STATUS, default='New')
+    status = models.CharField(
+        max_length=10, choices=STATUS, default='Requested')
     ip = models.CharField(blank=True, max_length=20)
     is_ordered = models.BooleanField(default=False)
     is_inquired = models.BooleanField(default=False)
