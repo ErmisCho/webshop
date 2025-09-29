@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.templatetags.static import static
 
 # Create your models here.
 
@@ -76,7 +77,8 @@ class UserProfile(models.Model):
     user = models.OneToOneField(Account, on_delete=models.CASCADE)
     address_line_1 = models.CharField(blank=True, max_length=100)
     address_line_2 = models.CharField(blank=True, max_length=100)
-    profile_picture = models.ImageField(blank=True, upload_to='userprofile/')
+    profile_picture = models.ImageField(
+        upload_to="avatars/", blank=True, null=True)
     city = models.CharField(blank=True, max_length=20)
     state = models.CharField(blank=True, max_length=20)
     country = models.CharField(blank=True, max_length=20)
@@ -86,3 +88,18 @@ class UserProfile(models.Model):
 
     def full_address(self):
         return f"{self.address_line_1} {self.address_line_2}"
+
+    @property
+    def avatar_url(self) -> str:
+        """
+        Use uploaded image if it actually exists in storage,
+        otherwise fall back to STATIC avatar.
+        """
+        f = self.profile_picture
+        if f and getattr(f, "name", None):
+            try:
+                if f.storage.exists(f.name):
+                    return f.url
+            except Exception:
+                pass
+        return static("images/avatars/avatar-default.png")

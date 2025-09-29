@@ -20,12 +20,16 @@ class AccountAdmin(UserAdmin):
     fieldsets = ()
 
 
+@admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    def thumbnail(self, object):
-        return format_html('<img src="{}" width="30" style="border-radius:50%;">'.format(object.profile_picture.url))
-    thumbnail.short_description = 'Profile Picture'
-    list_display = ('thumbnail', 'user', 'city', 'state', 'country')
+    list_display = ("user", "thumbnail", "city", "country")
+
+    def thumbnail(self, obj):
+        return format_html(
+            '<img src="{}" width="30" style="border-radius:50%;">',
+            obj.avatar_url  # <-- safe one-liner
+        )
+    thumbnail.short_description = "Avatar"
 
 
 admin.site.register(Account, AccountAdmin)
-admin.site.register(UserProfile, UserProfileAdmin)
