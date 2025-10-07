@@ -19,18 +19,153 @@
     </div><!-- //container -->
 </footer>
 <!-- ========================= FOOTER END // ========================= -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<style>
+  /* Lock scroll when modal is open */
+  body.modal-open { overflow: hidden; }
+
+  /* Overlay with subtle blur */
+  .image-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    padding: 24px;
+    background: rgba(0,0,0,0.15);
+    backdrop-filter: blur(2px);      /* softer blur */
+    -webkit-backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;         /* ensures perfect centering */
+  }
+
+  /* Centered content */
+  .image-modal__figure {
+    margin: 0;
+    max-width: min(92vw, 1100px);
+    max-height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .image-modal__figure img {
+    display: block;
+    max-width: 100%;
+    max-height: 85vh;
+    width: auto;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.25);
+    transition: transform .18s ease;
+  }
+
+  /* Controls */
+  .image-modal__btn,
+  .image-modal__close {
+    position: absolute;
+    border: 0;
+    outline: 0;
+    background: rgba(0,0,0,0.45);
+    color: #fff;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity .15s ease, transform .15s ease, background .15s ease;
+  }
+  .image-modal__btn:hover,
+  .image-modal__close:hover {
+    background: rgba(0,0,0,0.6);
+    transform: scale(1.03);
+  }
+
+  .image-modal__btn--prev { left: 18px; top: 50%; transform: translateY(-50%); }
+  .image-modal__btn--next { right: 18px; top: 50%; transform: translateY(-50%); }
+  .image-modal__close     { right: 18px; top: 18px; font-size: 24px; line-height: 1; }
+
+  /* Keep clicks outside image dismissing the modal */
+  .image-modal__backdrop {
+    position: absolute; inset: 0;
+  }
+</style>
+
+<div class="image-modal" aria-hidden="true" role="dialog">
+  <div class="image-modal__backdrop"></div>
+
+  <button class="image-modal__btn image-modal__btn--prev" aria-label="Previous image">‹</button>
+
+  <figure class="image-modal__figure" aria-live="polite">
+    <img src="" alt="Product image preview">
+  </figure>
+
+  <button class="image-modal__btn image-modal__btn--next" aria-label="Next image">›</button>
+  <button class="image-modal__close" aria-label="Close">×</button>
+</div>
 
 <script>
-    $(document).ready(function () {
-        $('a[target="mainImage"]').hover(function (e) {
-            e.preventDefault();
-            var newSrc = $(this).attr('href');
-            $('.mainImage img').attr('src', newSrc);
-        });
+$(function () {
+  const $thumbs = $('a[target="mainImage"]');     // your existing selector
+  const $modal  = $('.image-modal');
+  const $img    = $('.image-modal__figure img');
+  const $close  = $('.image-modal__close');
+  const $prev   = $('.image-modal__btn--prev');
+  const $next   = $('.image-modal__btn--next');
+  const $backdrop = $('.image-modal__backdrop');
+
+  let idx = -1;
+
+  // Keep your hover behavior (preview swap)
+  $thumbs.hover(function (e) {
+    e.preventDefault();
+    const src = $(this).attr('href');
+    $('.mainImage img').attr('src', src);
+  });
+
+  // Click: open centered viewer (no new tab)
+  $thumbs.on('click', function (e) {
+    e.preventDefault();
+    idx = $thumbs.index(this);
+    open($(this).attr('href'));
+  });
+
+  function open(src) {
+    $('body').addClass('modal-open');
+    $img.css('transform','scale(.985)');
+    $img.attr('src', src).on('load', function () {
+      $img.css('transform','scale(1)');  // subtle snap-in
     });
-</script>>
+    $modal.fadeIn(140).attr('aria-hidden','false');
+  }
 
+  function close() {
+    $modal.fadeOut(120).attr('aria-hidden','true');
+    $('body').removeClass('modal-open');
+  }
 
-</body>
+  function go(n) {
+    if (!$thumbs.length) return;
+    idx = (idx + n + $thumbs.length) % $thumbs.length;
+    open($thumbs.eq(idx).attr('href'));
+  }
+
+  // Controls
+  $prev.on('click', function (e) { e.stopPropagation(); go(-1); });
+  $next.on('click', function (e) { e.stopPropagation(); go(1); });
+  $close.on('click', function (e) { e.stopPropagation(); close(); });
+  $backdrop.on('click', close); // click outside image closes
+
+  // Keyboard support
+  $(document).on('keydown', function (e) {
+    if ($modal.is(':visible')) {
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft')  go(-1);
+      if (e.key === 'ArrowRight') go(1);
+    }
+  });
+});
+</script>
+
 </html>
