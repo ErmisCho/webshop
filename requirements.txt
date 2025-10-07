@@ -28,5 +28,6 @@ pillow==11.3.0
 python-dotenv==1.1.1
 sqlparse==0.5.3
 tzdata==2025.2
-requests
+requests==2.32.5
 django-anymail>=13.1
+django-admin-thumbnails==0.2.9
