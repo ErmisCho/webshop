@@ -7,3 +7,8 @@ others/*
 db.sqlite3
 .env
 .env.*
+
+media/
+media/*
+staticfiles/
+staticfiles/*
