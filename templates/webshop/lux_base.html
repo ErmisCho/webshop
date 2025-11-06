@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
-  <meta name="description" content="Exceptional jewelry and timepieces crafted with uncompromising standards.">
+  <meta name="description" content="Exquisite jewelry and timepieces crafted to perfection for those who value true elegance.">
   <meta property="og:title" content="Your Brand — Fine Jewelry">
   <meta property="og:description" content="Discover iconic pieces and visit a boutique near you.">
   <meta property="og:type" content="website">
@@ -17,50 +17,46 @@
   <title>{% block title %}Lux Preview{% endblock %}</title>
 
   <!-- Tailwind (CDN) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-    tailwind.config = {
-        theme: {
-        extend: {
-            fontFamily: {
-            sans: ['Inter', 'ui-sans-serif', 'system-ui'],
-            serif: ['Playfair Display', 'ui-serif', 'Georgia'],
-            },
-            letterSpacing: { widecaps: '.3em' }
-        }
-        }
-    }
-    </script>
-    <!-- Global styles + components -->
-    <style type="text/tailwindcss">
-    @layer base {
-        html { scroll-behavior: smooth; }            /* ✅ smooth scroll */
-        h1,h2,h3 { @apply font-serif; }
-    }
-    @layer components {
-        .btn         { @apply inline-flex items-center justify-center px-5 py-3 text-sm tracking-wider transition; }
-        .btn-dark    { @apply btn text-white bg-black hover:opacity-90; }
-        .btn-outline { @apply btn border border-white/70 text-white hover:bg-white hover:text-black; }
-        .btn-ghost   { @apply btn border border-white/30 hover:border-white text-white; }
-    }
-    </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+  tailwind.config = {
+      theme: {
+      extend: {
+          fontFamily: {
+          sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+          serif: ['Playfair Display', 'ui-serif', 'Georgia'],
+          },
+          letterSpacing: { widecaps: '.3em' }
+      }
+      }
+  }
+  </script>
+  <style type="text/tailwindcss">
+  @layer base {
+      html { scroll-behavior: smooth; }
+      h1,h2,h3 { @apply font-serif; }
+  }
+  @layer components {
+      .btn         { @apply inline-flex items-center justify-center px-5 py-3 text-sm tracking-wider transition; }
+      .btn-dark    { @apply btn text-white bg-black hover:opacity-90; }
+      .btn-outline { @apply btn border border-white/70 text-white hover:bg-white hover:text-black; }
+      .btn-ghost   { @apply btn border border-white/30 hover:border-white text-white; }
+  }
+  </style>
 
   {% block head_extra %}{% endblock %}
 </head>
 <body class="bg-white text-neutral-900 antialiased">
 
-  <!-- No default header here. Your page will include `webshop/includes/nav.html` inside the content block. -->
-
   <main>
     {% block content %}{% endblock %}
   </main>
 
-  {% comment %} Lightbox JS only on pages that need it {% endcomment %}
   {% if use_gallery_lightbox %}
     <script src="{% static 'webshop/js/lightbox.js' %}"></script>
   {% endif %}
 
-  <!-- Mobile drawer toggle (for nav include) -->
+  <!-- Mobile drawer toggle -->
   <script>
   (function () {
     const openBtn = document.getElementById('openNav');
@@ -86,6 +82,121 @@
     closeBtn.addEventListener('click', close);
     backdrop.addEventListener('click', close);
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  })();
+  </script>
+
+  <!-- Sales Inquiry Modal -->
+  <div id="inquiryModal" class="hidden fixed inset-0 z-50">
+    <div id="inquiryBackdrop" class="absolute inset-0 bg-black/60"></div>
+    <div class="relative mx-auto mt-20 w-[92%] max-w-md rounded-2xl bg-white shadow-2xl">
+      <div class="p-6 border-b">
+        <h3 class="text-lg font-semibold tracking-wide">Request Details</h3>
+        <p class="text-sm text-gray-500" id="inquiryProductLine"></p>
+      </div>
+      <form id="inquiryForm" class="p-6 space-y-3">
+        {% csrf_token %}
+        <input type="hidden" name="product_id" id="inquiryProductId">
+        <input type="hidden" name="product_title" id="inquiryProductTitle">
+
+        <div>
+          <label class="block text-sm mb-1">Your name</label>
+          <input name="name" type="text" class="w-full border rounded-lg p-2" required>
+        </div>
+
+        <div>
+          <label class="block text-sm mb-1">Your email</label>
+          <input name="email" type="email" class="w-full border rounded-lg p-2" required>
+        </div>
+
+        <div>
+          <label class="block text-sm mb-1">Phone (optional)</label>
+          <input name="phone" type="tel" class="w-full border rounded-lg p-2" placeholder="+43 660 1234567">
+        </div>
+
+        <div>
+          <label class="block text-sm mb-1">Message</label>
+          <textarea name="message" class="w-full border rounded-lg p-2 h-28" required
+                placeholder="Please describe your inquiry — one of our specialists will contact you with tailored information."></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-2">
+          <button type="button" id="inquiryCancel"
+                  class="px-4 py-2 rounded-lg border hover:bg-gray-50">Cancel</button>
+          <button type="submit"
+                  class="px-4 py-2 rounded-lg bg-black text-white hover:bg-gray-800">Send</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Inquiry Modal Logic -->
+  <script>
+  (function () {
+    const modal = document.getElementById('inquiryModal');
+    if (!modal) { console.warn('Inquiry modal missing'); return; }
+
+    const backdrop = document.getElementById('inquiryBackdrop');
+    const form = document.getElementById('inquiryForm');
+    const cancel = document.getElementById('inquiryCancel');
+    const line = document.getElementById('inquiryProductLine');
+    const hidId = document.getElementById('inquiryProductId');
+    const hidTitle = document.getElementById('inquiryProductTitle');
+
+    function openModal(pid, ptitle) {
+      hidId.value = pid || '';
+      hidTitle.value = ptitle || 'Item';
+      line.textContent = `You’re enquiring about: ${ptitle || 'Item'}`;
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('click', function (e) {
+      const navLink = e.target.closest('[data-nav="detail"]');
+      if (navLink) return; // let EXPLORE navigate
+
+      const t = e.target.closest('[data-inquiry]');
+      if (!t) return;
+
+      if (e.button === 1 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+      e.preventDefault();
+      const pid = t.getAttribute('data-product-id');
+      const ptitle = t.getAttribute('data-product-title');
+      console.debug('Inquiry intercepted:', { pid, ptitle });
+      openModal(pid, ptitle);
+    }, { capture: true });
+
+    backdrop.addEventListener('click', closeModal);
+    cancel.addEventListener('click', closeModal);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    function getCookie(name) {
+      const v = `; ${document.cookie}`;
+      const parts = v.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const resp = await fetch("{% url 'send_inquiry' %}", {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrftoken },
+        body: data
+      });
+      if (resp.ok) {
+        alert('Your message has been sent. Our team will reply shortly.');
+        form.reset();
+        closeModal();
+      } else {
+        alert('There was a problem sending your message.');
+      }
+    });
   })();
   </script>
 

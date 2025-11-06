@@ -1,0 +1,42 @@
+<!-- Inquiry Modal -->
+<div id="inquiryModal" class="hidden fixed inset-0 z-50">
+  <!-- backdrop -->
+  <div id="inquiryBackdrop" class="absolute inset-0 bg-black/60"></div>
+
+  <!-- panel -->
+  <div class="relative mx-auto mt-20 w-[92%] max-w-md rounded-2xl bg-white shadow-2xl">
+    <div class="p-6 border-b">
+      <h3 class="text-lg font-semibold tracking-wide">Request Details</h3>
+      <p class="text-sm text-gray-500" id="inquiryProductLine"></p>
+    </div>
+
+    <form id="inquiryForm" class="p-6 space-y-3">
+      {% csrf_token %}
+      <input type="hidden" name="product_id" id="inquiryProductId">
+      <input type="hidden" name="product_title" id="inquiryProductTitle">
+
+      <div>
+        <label class="block text-sm mb-1">Your name</label>
+        <input name="name" type="text" class="w-full border rounded-lg p-2" required>
+      </div>
+
+      <div>
+        <label class="block text-sm mb-1">Your email</label>
+        <input name="email" type="email" class="w-full border rounded-lg p-2" required>
+      </div>
+
+      <div>
+        <label class="block text-sm mb-1">Message</label>
+        <textarea name="message" class="w-full border rounded-lg p-2 h-28" required
+          placeholder="I’m interested in this piece. Please share price, availability, and shipping options."></textarea>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-2">
+        <button type="button" id="inquiryCancel"
+                class="px-4 py-2 rounded-lg border hover:bg-gray-50">Cancel</button>
+        <button type="submit"
+                class="px-4 py-2 rounded-lg bg-black text-white hover:bg-gray-800">Send</button>
+      </div>
+    </form>
+  </div>
+</div>
