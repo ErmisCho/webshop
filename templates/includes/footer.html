@@ -91,19 +91,22 @@
     position: absolute; inset: 0;
   }
 </style>
-
+{% if use_gallery_lightbox %}
 <div class="image-modal" aria-hidden="true" role="dialog">
   <div class="image-modal__backdrop"></div>
 
   <button class="image-modal__btn image-modal__btn--prev" aria-label="Previous image">‹</button>
 
-  <figure class="image-modal__figure" aria-live="polite">
+
+  <figure id="lux-lightbox-root" class="image-modal__figure" aria-live="polite">
     <img src="" alt="Product image preview">
   </figure>
+
 
   <button class="image-modal__btn image-modal__btn--next" aria-label="Next image">›</button>
   <button class="image-modal__close" aria-label="Close">×</button>
 </div>
+{% endif %}
 
 <script>
 $(function () {

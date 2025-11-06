@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import json
 from django.contrib.messages import constants as messages
 import os
 from pathlib import Path
@@ -86,6 +86,33 @@ if ENV == "production":
         "SENDGRID_API_URL": "https://api.sendgrid.com/v3",
     }
 
+# Branding
+BRAND_NAME = os.getenv("BRAND_NAME", "YOUR BRAND")
+FOOTER_NOTE = os.getenv(
+    "FOOTER_NOTE", "A modern Django e-commerce platform built to deliver elegance, performance, and precision.")
+
+
+def env_json(name, fallback):
+    raw = os.getenv(name, "")
+    if not raw:
+        return fallback
+    try:
+        return json.loads(raw)
+    except Exception:
+        # tolerate bad quotes in local editing
+        try:
+            fixed = (raw
+                     .replace("’", "'").replace("‘", "'")
+                     .replace("“", '"').replace("”", '"')
+                     .replace("'", '"'))
+            return json.loads(fixed)
+        except Exception:
+            return fallback
+
+
+DEFAULT_NAV = [["High Jewelry", "#"], [
+    "Watches", "#"], ["Bridal", "#"], ["Stories", "#"]]
+NAV_ITEMS = env_json("NAV_ITEMS", DEFAULT_NAV)
 
 # Application definition
 
@@ -121,7 +148,8 @@ ROOT_URLCONF = 'webshop.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ["templates"],
+        # 'DIRS': ["templates"],
+        "DIRS": [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -132,6 +160,7 @@ TEMPLATES = [
                 'category.context_processors.menu_links',
                 'cart.context_processors.counter',
                 'sales_inquiries.context_processors.shop_flags',
+                "webshop.context.branding",
             ],
         },
     },

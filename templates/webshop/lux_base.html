@@ -1,0 +1,94 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <meta name="description" content="Exceptional jewelry and timepieces crafted with uncompromising standards.">
+  <meta property="og:title" content="Your Brand — Fine Jewelry">
+  <meta property="og:description" content="Discover iconic pieces and visit a boutique near you.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://yourdomain.com/static/og/hero.jpg">
+  <meta name="theme-color" content="#111111">
+  <link rel="icon" href="{% static 'images/favicon.ico' %}">
+
+  <title>{% block title %}Lux Preview{% endblock %}</title>
+
+  <!-- Tailwind (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+        extend: {
+            fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+            serif: ['Playfair Display', 'ui-serif', 'Georgia'],
+            },
+            letterSpacing: { widecaps: '.3em' }
+        }
+        }
+    }
+    </script>
+    <!-- Global styles + components -->
+    <style type="text/tailwindcss">
+    @layer base {
+        html { scroll-behavior: smooth; }            /* ✅ smooth scroll */
+        h1,h2,h3 { @apply font-serif; }
+    }
+    @layer components {
+        .btn         { @apply inline-flex items-center justify-center px-5 py-3 text-sm tracking-wider transition; }
+        .btn-dark    { @apply btn text-white bg-black hover:opacity-90; }
+        .btn-outline { @apply btn border border-white/70 text-white hover:bg-white hover:text-black; }
+        .btn-ghost   { @apply btn border border-white/30 hover:border-white text-white; }
+    }
+    </style>
+
+  {% block head_extra %}{% endblock %}
+</head>
+<body class="bg-white text-neutral-900 antialiased">
+
+  <!-- No default header here. Your page will include `webshop/includes/nav.html` inside the content block. -->
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  {% comment %} Lightbox JS only on pages that need it {% endcomment %}
+  {% if use_gallery_lightbox %}
+    <script src="{% static 'webshop/js/lightbox.js' %}"></script>
+  {% endif %}
+
+  <!-- Mobile drawer toggle (for nav include) -->
+  <script>
+  (function () {
+    const openBtn = document.getElementById('openNav');
+    const closeBtn = document.getElementById('closeNav');
+    const drawer   = document.getElementById('mobileNav');
+    const backdrop = document.getElementById('mobileNavBackdrop');
+    if (!openBtn || !closeBtn || !drawer || !backdrop) return;
+
+    function open() {
+      drawer.classList.remove('hidden', 'translate-x-full');
+      drawer.classList.add('translate-x-0');
+      backdrop.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+    function close() {
+      drawer.classList.add('translate-x-full');
+      drawer.classList.remove('translate-x-0');
+      backdrop.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    openBtn.addEventListener('click', open);
+    closeBtn.addEventListener('click', close);
+    backdrop.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  })();
+  </script>
+
+  {% block body_extra %}{% endblock %}
+</body>
+</html>
