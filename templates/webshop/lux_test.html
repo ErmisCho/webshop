@@ -24,7 +24,7 @@
       </p>
       <div class="mt-6 flex items-center justify-center gap-4">
         <a href="#iconic" class="inline-flex items-center justify-center px-6 py-3 text-sm tracking-wider border border-white/60 text-white hover:bg-white hover:text-black transition">EXPLORE</a>
-        <a href="#" class="inline-flex items-center justify-center px-6 py-3 text-sm tracking-wider border border-white/60 text-white hover:bg-white hover:text-black transition">VIEW LOOKBOOK</a>
+        <!-- <a href="#" class="inline-flex items-center justify-center px-6 py-3 text-sm tracking-wider border border-white/60 text-white hover:bg-white hover:text-black transition">VIEW LOOKBOOK</a> -->
       </div>
     </div>
   </section>
@@ -57,28 +57,28 @@
                 onerror="this.src='{% static 'webshop/img/placeholder-600x800.jpg' %}'"
               >
             </div>
-            <div class="p-4 flex items-center justify-between">
-              <h3 class="font-light tracking-wide underline decoration-transparent group-hover:decoration-inherit">
+            <div class="p-4 text-center items-center justify-between">
+              <h3 class="font-light tracking-wider text-neutral-800 underline decoration-transparent group-hover:decoration-inherit">
                 {{ p.product_name }}
               </h3>
-              <span class="text-xs tracking-wider opacity-70">INQUIRE</span>
+              <!-- <span class="text-xs tracking-wider opacity-70">INQUIRE</span> -->
             </div>
           </a>
 
           <!-- Separate explore link that still navigates -->
-          <div class="px-4 pb-4 -mt-2 flex justify-end">
+          <!-- <div class="px-4 pb-4 -mt-2 flex justify-end">
             <a href="{% url 'product_detail' p.category.slug p.slug %}"
                data-nav="detail"
                class="text-xs tracking-wider text-neutral-600 hover:text-neutral-900">
               EXPLORE
             </a>
-          </div>
+          </div> -->
         </div>
       {% empty %}
         <p class="text-neutral-500">No products available yet.</p>
       {% endfor %}
     </div>
-
+    <br><br>
     <!-- Editorial Block -->
     <section class="max-w-7xl mx-auto px-4 md:px-8 pb-20">
       <div class="grid md:grid-cols-2 gap-10 items-center">
