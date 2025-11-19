@@ -1,0 +1,126 @@
+{% extends "webshop/lux_base.html" %}
+
+{% block title %}Our Story{% endblock %}
+
+{% block content %}
+  {% include "webshop/includes/nav.html" %}
+
+  <!-- HERO SECTION -->
+  <section class="relative mt-6">
+    <img
+      src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1500&auto=format&fit=crop"
+      alt="Jeweler at work in the atelier"
+      class="w-full h-[70vh] md:h-[76vh] object-cover"
+    />
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute inset-0 bg-black/30 md:bg-black/35"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent"></div>
+    </div>
+    <div class="absolute bottom-12 md:bottom-16 left-1/2 -translate-x-1/2 text-center text-white px-6 drop-shadow-md">
+      <p class="tracking-[0.3em] text-[10px] md:text-xs mb-3">MAISON STORY</p>
+      <h1 class="text-4xl md:text-6xl font-light font-serif mb-4">Our Story</h1>
+      <p class="max-w-2xl mx-auto text-sm md:text-base leading-relaxed opacity-90">
+        A house built on quiet craft, modern design and pieces created to be worn — and loved — every day.
+      </p>
+      <div class="mt-6 flex items-center justify-center gap-4">
+        <a href="#story" class="inline-flex items-center justify-center px-6 py-3 text-sm tracking-wider border border-white/60 text-white hover:bg-white hover:text-black transition">
+          READ MORE
+        </a>
+        <a
+          href="#"
+          data-inquiry
+          data-product-id="story"
+          data-product-title="General brand inquiry"
+          class="inline-flex items-center justify-center px-6 py-3 text-sm tracking-wider border border-white/60 text-white hover:bg-white hover:text-black transition"
+        >
+          CONTACT OUR TEAM
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN STORY SECTION -->
+  <section id="story" class="max-w-7xl mx-auto px-4 md:px-8 py-16">
+    <div class="grid md:grid-cols-2 gap-10 items-start">
+      <!-- LEFT COLUMN -->
+      <div>
+        <p class="tracking-[0.3em] text-xs mb-3 text-neutral-500">ORIGINS</p>
+        <h2 class="text-2xl md:text-3xl font-light tracking-wide font-serif mb-4">
+          A small atelier with a long view
+        </h2>
+        <p class="text-sm md:text-base text-neutral-700 leading-7 mb-4">
+          The house began with a simple idea: to create jewelry that feels personal, not seasonal.
+          Pieces that sit comfortably on the skin, age beautifully and quietly become part of your
+          daily ritual.
+        </p>
+        <p class="text-sm md:text-base text-neutral-700 leading-7 mb-4">
+          From the start, our team chose to work closely with a handful of goldsmiths and stone
+          setters. Every ring, necklace and earring is handled by people who know their craft —
+          not pushed through a large production line.
+        </p>
+        <p class="text-sm md:text-base text-neutral-700 leading-7">
+          Today, the collection includes both classic silhouettes and contemporary lines, but the
+          approach remains the same: honest materials, considered proportions and details you only
+          notice when you hold the piece in your hand.
+        </p>
+      </div>
+
+      <!-- RIGHT COLUMN CARD -->
+      <div class="border border-neutral-200/70 rounded-2xl p-6 md:p-8 bg-white">
+        <p class="tracking-[0.3em] text-[10px] md:text-xs mb-3 text-neutral-500">IN SHORT</p>
+        <h3 class="text-xl font-light font-serif mb-4">What defines the maison</h3>
+        <ul class="text-sm text-neutral-700 space-y-2">
+          <li>• Small, focused collections instead of fast seasonal drops.</li>
+          <li>• A mix of traditional handwork and modern techniques.</li>
+          <li>• Pieces designed to layer, combine and live with you over time.</li>
+          <li>• Direct conversations with clients, not anonymous transactions.</li>
+        </ul>
+        <p class="text-xs text-neutral-500 mt-4">
+          If you would like to know more about our process or a specific piece, our team is happy
+          to share details and options.
+        </p>
+
+        <div class="mt-6">
+          <a
+            href="#"
+            data-inquiry
+            data-product-id="story"
+            data-product-title="General brand inquiry"
+            class="inline-flex items-center justify-center px-6 py-3 text-sm tracking-wider border border-neutral-900 text-neutral-900 hover:bg-neutral-900 hover:text-white transition w-full md:w-auto"
+          >
+            Send a question
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDITORIAL SECTION -->
+  <section class="max-w-7xl mx-auto px-4 md:px-8 pb-20 border-t border-neutral-200/70">
+    <div class="grid md:grid-cols-2 gap-10 items-center pt-12">
+      <div class="relative overflow-hidden bg-neutral-100 rounded-xl">
+        <img
+          src="https://images.stockcake.com/public/5/3/b/53b7fdfc-a650-4046-b020-b963e79b6f9a_large/luxury-jewelry-showcase-stockcake.jpg"
+          alt="Jewelry box with pearls and ring"
+          class="w-full h-full object-cover"
+        >
+      </div>
+      <div class="md:pl-6">
+        <p class="tracking-[0.3em] text-xs mb-3 text-neutral-500">TODAY &amp; TOMORROW</p>
+        <h3 class="text-2xl md:text-3xl font-light mb-4 font-serif">Pieces made to stay</h3>
+        <p class="text-neutral-700 leading-7">
+          Whether you discover the house through an engagement ring, a simple chain or a pair of
+          earrings, the intention is the same: to offer something you will still enjoy wearing
+          years from now.
+        </p>
+        <p class="text-neutral-700 leading-7 mt-3">
+          We continue to refine our shapes, explore new materials – including lab-grown diamonds –
+          and keep production close to people we trust. The goal isn’t to be everywhere, but to be
+          meaningful wherever our pieces appear.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {% include "webshop/includes/footer.html" %}
+{% endblock %}
