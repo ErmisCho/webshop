@@ -19,6 +19,10 @@ from django.http import JsonResponse
 from django.core.mail import EmailMultiAlternatives, BadHeaderError
 from django.conf import settings
 from .email_async import executor
+from django.shortcuts import render
+from django.http import Http404
+from django.template import TemplateDoesNotExist
+
 import logging
 import re
 logger = logging.getLogger(__name__)
@@ -138,3 +142,11 @@ def send_inquiry(request):
     executor.submit(_send_pair, name, email, phone, msg, pid, ptitle, brand)
 
     return JsonResponse({"ok": True, "queued": True})
+
+
+def static_page(request, page_slug):
+    template_name = f"webshop/{page_slug}.html"
+    try:
+        return render(request, template_name)
+    except TemplateDoesNotExist:
+        raise Http404("Page not found")

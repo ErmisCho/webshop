@@ -33,5 +33,6 @@ urlpatterns = [
     path("", include("sales_inquiries.urls", namespace="sales_inquiries")),
     path("lux/", lux_preview, name="lux_preview"),
     path("send-inquiry/", views.send_inquiry, name="send_inquiry"),
+    path("<slug:page_slug>/", views.static_page, name="static_page"),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

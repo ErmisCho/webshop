@@ -1,0 +1,126 @@
+{% extends "webshop/lux_base.html" %}
+
+{% block title %}Grow YOUR Diamond{% endblock %}
+
+{% block content %}
+  {% include "webshop/includes/nav.html" %}
+
+  <!-- HERO SECTION -->
+  <section class="relative mt-6">
+    <img
+      src="https://images.stockcake.com/public/d/3/8/d3880332-9da7-45f2-8462-ed0940ff9156_large/crafting-fine-jewelry-stockcake.jpg"
+      alt="Elegant jewelry in a box"
+      class="w-full h-[70vh] md:h-[76vh] object-cover"
+    />
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute inset-0 bg-black/30 md:bg-black/35"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent"></div>
+    </div>
+    <div class="absolute bottom-12 md:bottom-16 left-1/2 -translate-x-1/2 text-center text-white px-6 drop-shadow-md">
+      <p class="tracking-[0.3em] text-[10px] md:text-xs mb-3">LAB-GROWN SERVICE</p>
+      <h1 class="text-4xl md:text-6xl font-light font-serif mb-4">Grow YOUR Diamond</h1>
+      <p class="max-w-2xl mx-auto text-sm md:text-base leading-relaxed opacity-90">
+        You choose the feeling, the occasion and the style. Our team grows a lab diamond just for you
+        and sets it into a bespoke piece.
+      </p>
+      <div class="mt-6 flex items-center justify-center gap-4">
+        <a href="#overview" class="inline-flex items-center justify-center px-6 py-3 text-sm tracking-wider border border-white/60 text-white hover:bg-white hover:text-black transition">
+          LEARN MORE
+        </a>
+
+        <!-- FIXED CTA: USES inquiry modal -->
+        <a
+          href="#"
+          data-inquiry
+          data-product-id="grow"
+          data-product-title="Custom lab-grown diamond"
+          class="inline-flex items-center justify-center px-6 py-3 text-sm tracking-wider border border-white/60 text-white hover:bg-white hover:text-black transition"
+        >
+          CONTACT OUR TEAM
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- OVERVIEW -->
+  <section id="overview" class="max-w-7xl mx-auto px-4 md:px-8 py-16">
+    <div class="grid md:grid-cols-2 gap-10 items-start">
+
+      <!-- LEFT TEXT -->
+      <div>
+        <p class="tracking-[0.3em] text-xs mb-3 text-neutral-500">WHAT IT MEANS</p>
+        <h2 class="text-2xl md:text-3xl font-light tracking-wide font-serif mb-4">
+          A diamond grown around your story
+        </h2>
+        <p class="text-sm md:text-base text-neutral-700 leading-7 mb-4">
+          Instead of selecting a finished stone, you begin with an idea — an engagement,
+          an anniversary, a milestone or simply a piece you’ve always imagined.
+        </p>
+        <p class="text-sm md:text-base text-neutral-700 leading-7 mb-4">
+          Our partners grow a lab-created diamond that aligns with your vision. Once ready,
+          our atelier hand-finishes the setting to your preferred style.
+        </p>
+        <p class="text-sm md:text-base text-neutral-700 leading-7">
+          You don’t need technical knowledge or expertise — the sales team walks you through
+          everything at your pace.
+        </p>
+      </div>
+
+      <!-- RIGHT BOX -->
+      <div class="border border-neutral-200/70 rounded-2xl p-6 md:p-8 bg-white">
+        <p class="tracking-[0.3em] text-[10px] md:text-xs mb-3 text-neutral-500">WHAT YOU CAN SHARE</p>
+        <h3 class="text-xl font-light font-serif mb-4">A simple starting point</h3>
+        <ul class="text-sm text-neutral-700 space-y-2">
+          <li>• The occasion or reason for the piece.</li>
+          <li>• The general style you like.</li>
+          <li>• A rough or comfortable budget range.</li>
+        </ul>
+        <p class="text-xs text-neutral-500 mt-4">
+          Everything else — stone options, quality differences and final details — is handled
+          directly by our specialists.
+        </p>
+
+        <div class="mt-6">
+          <a
+            href="#"
+            data-inquiry
+            data-product-id="grow"
+            data-product-title="Custom lab-grown diamond"
+            class="inline-flex items-center justify-center px-6 py-3 text-sm tracking-wider border border-neutral-900 text-neutral-900 hover:bg-neutral-900 hover:text-white transition w-full md:w-auto"
+          >
+            Send a short inquiry
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- EDITORIAL SECTION: NEW IMAGE -->
+  <section class="max-w-7xl mx-auto px-4 md:px-8 pb-20 border-t border-neutral-200/70">
+    <div class="grid md:grid-cols-2 gap-10 items-center pt-12">
+
+      <div class="relative overflow-hidden bg-neutral-100 rounded-xl">
+        <img
+          src="https://images.stockcake.com/public/6/e/4/6e446b11-fe23-4584-8989-fd6f596230b3_large/jeweler-examining-diamond-stockcake.jpg"
+          alt="Craftsmanship workshop"
+          class="w-full h-full object-cover"
+        >
+      </div>
+
+      <div class="md:pl-6">
+        <p class="tracking-[0.3em] text-xs mb-3 text-neutral-500">GUIDED EXPERIENCE</p>
+        <h3 class="text-2xl md:text-3xl font-light mb-4 font-serif">A calm, personal consultation</h3>
+        <p class="text-neutral-700 leading-7">
+          After your inquiry, one of our specialists will reach out personally — by e-mail,
+          phone or in person. They’ll show you suitable stones, explain differences in clarity
+          and size, and help you finalise the design at your own pace.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  {% include "webshop/includes/footer.html" %}
+{% endblock %}

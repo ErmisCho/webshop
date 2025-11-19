@@ -8,10 +8,15 @@
 
       <!-- desktop menu -->
       <nav class="hidden md:flex items-center gap-8">
-        {% for label, href in nav_items %}
-          <a href="{{ href }}" class="tracking-wider py-4">{{ label }}</a>
-        {% empty %}
-          <span class="text-xs text-neutral-400">no nav_items</span>
+        {% for item in nav_items %}
+          {% with label=item.0 %}
+              {% if forloop.first %}
+                  {# first item -> home page #}
+                  <a href="{% url 'lux_preview' %}">{{ label }}</a>
+              {% else %}
+                  <a href="{% url 'static_page' label|slugify %}">{{ label }}</a>
+              {% endif %}
+          {% endwith %}
         {% endfor %}
       </nav>
 
