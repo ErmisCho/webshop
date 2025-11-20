@@ -1,5 +1,5 @@
 {% extends "webshop/lux_base.html" %}
-
+{% load static %}
 {% block title %}{{ brand }}{% endblock %}
 
 {% block content %}
@@ -8,23 +8,26 @@
   <!-- HERO SECTION -->
   <section class="relative mt-6">
     <img
-      src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=1920&auto=format&fit=crop"
-      alt="Jewelry hero"
+      src="{% static 'images/main_central_picture.jpg' %}?q=80&w=1920&auto=format&fit=crop"
+
+      alt="Bespoke fine jewelry"
       class="w-full h-[70vh] md:h-[76vh] object-cover"
     />
+    <!-- <link href="{% static 'images/main_central_picture.jpg' %}" rel="shortcut icon" type="image/x-icon"> -->
     <div class="absolute inset-0 pointer-events-none">
       <div class="absolute inset-0 bg-black/30 md:bg-black/35"></div>
       <div class="absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent"></div>
     </div>
     <div class="absolute bottom-12 md:bottom-16 left-1/2 -translate-x-1/2 text-center text-white px-6 drop-shadow-md">
-      <p class="tracking-[0.3em] text-[10px] md:text-xs mb-3">NEW COLLECTION</p>
+      <p class="tracking-[0.3em] text-[10px] md:text-xs mb-3">BESPOKE ONLY</p>
       <h1 class="text-4xl md:text-6xl font-light font-serif mb-4">Celestial Lights</h1>
       <p class="max-w-2xl mx-auto text-sm md:text-base leading-relaxed opacity-90">
-        A symphony of brilliance and craftsmanship inspired by the night sky.
+        One-of-a-kind pieces, designed in private consultation and made especially for you.
       </p>
       <div class="mt-6 flex items-center justify-center gap-4">
-        <a href="#iconic" class="inline-flex items-center justify-center px-6 py-3 text-sm tracking-wider border border-white/60 text-white hover:bg-white hover:text-black transition">EXPLORE</a>
-        <!-- <a href="#" class="inline-flex items-center justify-center px-6 py-3 text-sm tracking-wider border border-white/60 text-white hover:bg-white hover:text-black transition">VIEW LOOKBOOK</a> -->
+        <a href="#iconic" class="inline-flex items-center justify-center px-6 py-3 text-sm tracking-wider border border-white/60 text-white hover:bg-white hover:text-black transition">
+          VIEW BESPOKE EXAMPLES
+        </a>
       </div>
     </div>
   </section>
@@ -32,15 +35,16 @@
   <!-- ICONIC PIECES GRID -->
   <section class="max-w-7xl mx-auto px-4 md:px-8 py-16" id="iconic">
     <header class="text-center mb-10">
-      <h2 class="text-2xl md:text-3xl font-light tracking-wide font-serif">Iconic Pieces</h2>
-      <p class="mt-3 text-neutral-600">Timeless designs that define modern elegance.</p>
+      <h2 class="text-2xl md:text-3xl font-light tracking-wide font-serif">Bespoke Creations</h2>
+      <p class="mt-3 text-neutral-600">
+        Each design shown here began as a conversation and was made for one person.
+      </p>
     </header>
 
     {% load static %}
     <div class="grid md:grid-cols-3 gap-8">
       {% for p in products %}
         <div class="group rounded-2xl border border-neutral-200/60 overflow-hidden">
-          <!-- Clicking this anchor triggers the inquiry modal -->
           <a
             href="{% url 'product_detail' p.category.slug p.slug %}"
             data-inquiry
@@ -61,39 +65,36 @@
               <h3 class="font-light tracking-wider text-neutral-800 underline decoration-transparent group-hover:decoration-inherit">
                 {{ p.product_name }}
               </h3>
-              <!-- <span class="text-xs tracking-wider opacity-70">INQUIRE</span> -->
+              {# Optional: small hint it's bespoke #}
+              {# <span class="text-xs tracking-wider opacity-70">MADE TO ORDER</span> #}
             </div>
           </a>
-
-          <!-- Separate explore link that still navigates -->
-          <!-- <div class="px-4 pb-4 -mt-2 flex justify-end">
-            <a href="{% url 'product_detail' p.category.slug p.slug %}"
-               data-nav="detail"
-               class="text-xs tracking-wider text-neutral-600 hover:text-neutral-900">
-              EXPLORE
-            </a>
-          </div> -->
         </div>
       {% empty %}
-        <p class="text-neutral-500">No products available yet.</p>
+        <p class="text-neutral-500">
+          New bespoke pieces are currently in progress. Contact us to begin your own.
+        </p>
       {% endfor %}
     </div>
     <br><br>
+
     <!-- Editorial Block -->
     <section class="max-w-7xl mx-auto px-4 md:px-8 pb-20">
       <div class="grid md:grid-cols-2 gap-10 items-center">
         <div class="relative overflow-hidden bg-neutral-100 rounded-xl">
-          <img src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1500&auto=format&fit=crop"
-               alt="Atelier"
-               class="w-full h-full object-cover"
-               loading="lazy" decoding="async">
+          <img
+            src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1500&auto=format&fit=crop"
+            alt="Jewelry atelier"
+            class="w-full h-full object-cover"
+            loading="lazy" decoding="async"
+          >
         </div>
         <div class="md:pl-6">
-          <p class="tracking-[0.3em] text-xs mb-3 text-neutral-500">MAISON SAVOIR-FAIRE</p>
-          <h3 class="text-2xl md:text-3xl font-light mb-4 font-serif">Crafted by Masters</h3>
+          <p class="tracking-[0.3em] text-xs mb-3 text-neutral-500">PERSONAL CONSULTATION</p>
+          <h3 class="text-2xl md:text-3xl font-light mb-4 font-serif">Created Around You</h3>
           <p class="text-neutral-700 leading-7">
-            Each piece is meticulously set by hand using time-honored techniques. Our ateliers combine
-            heritage and innovation to achieve unmatched brilliance and comfort in wear.
+            We begin with a quiet conversation: how you live, what you love, how you wear your jewelry.
+            From there, we sketch, select stones and refine the details until the piece feels uniquely yours.
           </p>
         </div>
       </div>
