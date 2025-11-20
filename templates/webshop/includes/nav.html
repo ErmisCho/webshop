@@ -49,10 +49,26 @@
     </div>
 
     <nav class="px-5 py-4">
-      <a class="block py-3 border-b hover:bg-neutral-50" href="#">High Jewelry</a>
-      <a class="block py-3 border-b hover:bg-neutral-50" href="#">Watches</a>
-      <a class="block py-3 border-b hover:bg-neutral-50" href="#">Bridal</a>
-      <a class="block py-3 hover:bg-neutral-50" href="#">Stories</a>
+      {% for item in nav_items %}
+        {% with label=item.0 %}
+          {% if forloop.first %}
+            {# first item -> home page, same as desktop #}
+            <a
+              class="block py-3 border-b hover:bg-neutral-50"
+              href="{% url 'lux_preview' %}"
+            >
+              {{ label }}
+            </a>
+          {% else %}
+            <a
+              class="block py-3 border-b hover:bg-neutral-50"
+              href="{% url 'static_page' label|slugify %}"
+            >
+              {{ label }}
+            </a>
+          {% endif %}
+        {% endwith %}
+      {% endfor %}
     </nav>
   </div>
 
