@@ -1,11 +1,54 @@
-<footer class="bg-neutral-900 text-neutral-300 mt-16">
-  <div class="max-w-7xl mx-auto px-4 md:px-8 py-12">
-    <div class="text-xs tracking-[0.3em] text-neutral-400">YOUR BRAND</div>
-    <p class="mt-3 text-neutral-400 text-xs md:text-sm max-w-xl">
-      {{ footer_note }}
-    </p>
-    <div class="mt-6 text-xs text-neutral-500">
-      © {{ now|date:"Y" }} Your Brand · <a href="#" class="underline">Privacy</a> · <a href="#" class="underline">Terms</a>
+<footer class="mt-20 border-t border-black/8 bg-[rgba(244,244,242,0.92)] text-charcoal">
+  <div class="max-w-7xl mx-auto px-5 md:px-10 py-14 md:py-16">
+    <div class="grid gap-12 md:grid-cols-[1.2fr_0.8fr_0.8fr_1fr]">
+      <div>
+        <p class="text-[11px] uppercase tracking-[0.3em] text-charcoal/48">The House</p>
+        <div class="mt-5 font-serif text-[2rem] md:text-[2.35rem] leading-none tracking-[0.12em]">
+          {{ brand }}
+        </div>
+        <p class="mt-5 max-w-md text-sm md:text-base leading-7 text-charcoal/62">
+          {{ footer_note }}
+        </p>
+      </div>
+
+      <div>
+        <p class="text-[11px] uppercase tracking-[0.3em] text-charcoal/48">Explore</p>
+        <div class="mt-5 flex flex-col gap-4 text-[12px] uppercase tracking-[0.24em] text-charcoal/74">
+          <a href="{% url 'lux_preview' %}" class="transition-colors duration-300 hover:text-charcoal">Crafted Love</a>
+          <a href="{% url 'static_page' 'grow-your-diamond' %}" class="transition-colors duration-300 hover:text-charcoal">Grow Your Diamond</a>
+          <a href="{% url 'static_page' 'our-story' %}" class="transition-colors duration-300 hover:text-charcoal">Our Story</a>
+        </div>
+      </div>
+
+      <div>
+        <p class="text-[11px] uppercase tracking-[0.3em] text-charcoal/48">Services</p>
+        <div class="mt-5 flex flex-col gap-4 text-[12px] uppercase tracking-[0.24em] text-charcoal/74">
+          <a href="#" data-inquiry data-product-id="footer-consultation" data-product-title="Private consultation" class="transition-colors duration-300 hover:text-charcoal">Request Details</a>
+        </div>
+      </div>
+
+      <div class="md:pl-6">
+        <p class="text-[11px] uppercase tracking-[0.3em] text-charcoal/48">Private Appointment</p>
+        <p class="mt-5 text-sm md:text-base leading-7 text-charcoal/62">
+          For bespoke commissions, personal guidance, and product enquiries, contact the house directly.
+        </p>
+        <a
+          href="#"
+          data-inquiry
+          data-product-id="footer-appointment"
+          data-product-title="Private appointment"
+          class="mt-7 inline-flex items-center justify-center border border-charcoal/18 px-6 py-3 text-[11px] uppercase tracking-[0.28em] text-charcoal transition duration-300 ease-out hover:border-charcoal/38 hover:bg-charcoal hover:text-white"
+        >
+          Book a Consultation
+        </a>
+      </div>
+    </div>
+
+    <div class="mt-12 h-px w-full bg-[linear-gradient(90deg,transparent,rgba(22,20,17,0.14),transparent)]"></div>
+
+    <div class="mt-6 flex flex-col gap-3 text-[11px] uppercase tracking-[0.24em] text-charcoal/40 md:flex-row md:items-center md:justify-between">
+      <div>© {% now "Y" %} {{ brand }}</div>
+      <div>Private Consultation Only</div>
     </div>
   </div>
 </footer>

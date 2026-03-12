@@ -1,27 +1,33 @@
-<header id="luxHeader" class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b transition-colors">
+<header id="luxHeader" class="fixed inset-x-0 top-0 z-40 bg-[rgba(247,247,245,0.82)] backdrop-blur-md border-b border-black/6 transition-all duration-300 shadow-[0_10px_30px_rgba(0,0,0,0.04)]">
+  <div class="h-[1px] w-full bg-[linear-gradient(90deg,transparent,rgba(0,0,0,0.12),transparent)]"></div>
 
-
-  <div class="max-w-7xl mx-auto px-4 md:px-8">
-    <div class="flex items-center justify-between h-20">
+  <div class="max-w-7xl mx-auto px-5 md:px-10">
+    <div class="flex items-center justify-between h-[78px] md:h-[82px]">
       <!-- brand (left) -->
-      <a href="/" class="text-2xl md:text-3xl tracking-[0.2em] font-medium">{{ brand }}</a>
+      <a href="{% url 'lux_preview' %}" class="font-serif text-[2rem] md:text-[2.25rem] tracking-[0.14em] text-charcoal leading-none">
+        {{ brand }}
+      </a>
 
       <!-- desktop menu -->
-      <nav class="hidden md:flex items-center gap-8">
+      <nav class="hidden md:flex items-center gap-9 text-charcoal/76">
         {% for item in nav_items %}
           {% with label=item.0 %}
               {% if forloop.first %}
                   {# first item -> home page #}
-                  <a href="{% url 'lux_preview' %}">{{ label }}</a>
+                  <a href="{% url 'lux_preview' %}" class="relative text-[11px] uppercase tracking-[0.28em] transition-colors duration-300 hover:text-charcoal after:absolute after:left-0 after:-bottom-2 after:h-px after:w-0 after:bg-charcoal/70 after:transition-all after:duration-300 hover:after:w-full">
+                    {{ label }}
+                  </a>
               {% else %}
-                  <a href="{% url 'static_page' label|slugify %}">{{ label }}</a>
+                  <a href="{% url 'static_page' label|slugify %}" class="relative text-[11px] uppercase tracking-[0.28em] transition-colors duration-300 hover:text-charcoal after:absolute after:left-0 after:-bottom-2 after:h-px after:w-0 after:bg-charcoal/70 after:transition-all after:duration-300 hover:after:w-full">
+                    {{ label }}
+                  </a>
               {% endif %}
           {% endwith %}
         {% endfor %}
       </nav>
 
       <!-- hamburger (mobile, now on right) -->
-      <button class="md:hidden" id="openNav" aria-label="Open menu">
+      <button class="md:hidden text-charcoal" id="openNav" aria-label="Open menu">
         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
              stroke-linecap="round" stroke-linejoin="round">
           <line x1="3" y1="6" x2="21" y2="6"/>
@@ -35,11 +41,11 @@
   <!-- right-side mobile drawer -->
   <div
     id="mobileNav"
-    class="fixed inset-y-0 right-0 w-[88%] max-w-sm bg-white shadow-2xl z-50 translate-x-full transition-transform duration-300 ease-out hidden"
+    class="fixed inset-y-0 right-0 w-[88%] max-w-sm bg-[rgba(247,247,245,0.98)] shadow-2xl z-50 translate-x-full transition-transform duration-300 ease-out hidden"
     aria-hidden="true"
   >
-    <div class="sticky top-0 bg-white border-b px-5 h-14 flex items-center justify-between">
-      <span class="tracking-[0.2em] text-xs text-neutral-600">MENU</span>
+    <div class="sticky top-0 bg-[rgba(247,247,245,0.98)] border-b border-black/8 px-5 h-16 flex items-center justify-between">
+      <span class="text-[11px] uppercase tracking-[0.28em] text-charcoal/55">Menu</span>
       <button id="closeNav" aria-label="Close menu" class="p-2 -mr-2">
         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="18" y1="6" x2="6" y2="18"/>
@@ -48,20 +54,20 @@
       </button>
     </div>
 
-    <nav class="px-5 py-4">
+    <nav class="px-5 py-5">
       {% for item in nav_items %}
         {% with label=item.0 %}
           {% if forloop.first %}
             {# first item -> home page, same as desktop #}
             <a
-              class="block py-3 border-b hover:bg-neutral-50"
+              class="block py-4 border-b border-black/8 text-[12px] uppercase tracking-[0.24em] text-charcoal/82 transition-colors duration-300 hover:text-charcoal"
               href="{% url 'lux_preview' %}"
             >
               {{ label }}
             </a>
           {% else %}
             <a
-              class="block py-3 border-b hover:bg-neutral-50"
+              class="block py-4 border-b border-black/8 text-[12px] uppercase tracking-[0.24em] text-charcoal/82 transition-colors duration-300 hover:text-charcoal"
               href="{% url 'static_page' label|slugify %}"
             >
               {{ label }}
@@ -88,10 +94,13 @@
         const h = document.getElementById('luxHeader');
         if (!h) return;
         const onScroll = () => {
-        const scrolled = window.scrollY > 10;
-        h.classList.toggle('bg-white/90', scrolled);
-        h.classList.toggle('border-b', scrolled);
-        h.classList.toggle('backdrop-blur', scrolled);
+        const scrolled = window.scrollY > 12;
+        h.classList.toggle('bg-[rgba(247,247,245,0.76)]', !scrolled);
+        h.classList.toggle('bg-[rgba(245,245,243,0.9)]', scrolled);
+        h.classList.toggle('backdrop-blur-md', !scrolled);
+        h.classList.toggle('backdrop-blur-lg', scrolled);
+        h.classList.toggle('shadow-[0_10px_30px_rgba(0,0,0,0.04)]', !scrolled);
+        h.classList.toggle('shadow-[0_14px_36px_rgba(0,0,0,0.07)]', scrolled);
         };
         onScroll();
         window.addEventListener('scroll', onScroll, { passive: true });

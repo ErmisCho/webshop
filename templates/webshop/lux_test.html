@@ -6,21 +6,22 @@
   {% include "webshop/includes/nav.html" %}
 
   <!-- HERO SECTION -->
-  <section class="relative mt-6">
+  <section class="relative pt-20 overflow-hidden">
     <img
       src="{% static 'images/main_central_picture.jpg' %}?q=80&w=1920&auto=format&fit=crop"
 
       alt="Bespoke fine jewelry"
-      class="w-full h-[70vh] md:h-[76vh] object-cover"
+      class="w-full h-[74vh] md:h-[82vh] object-cover"
     />
-    <!-- <link href="{% static 'images/main_central_picture.jpg' %}" rel="shortcut icon" type="image/x-icon"> -->
     <div class="absolute inset-0 pointer-events-none">
       <div class="absolute inset-0 bg-black/30 md:bg-black/35"></div>
       <div class="absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent"></div>
     </div>
     <div class="absolute bottom-12 md:bottom-16 left-1/2 -translate-x-1/2 text-center text-white px-6 drop-shadow-md">
       <p class="tracking-[0.3em] text-[10px] md:text-xs mb-3">BESPOKE ONLY</p>
-      <h1 class="text-4xl md:text-6xl font-light font-serif mb-4">Celestial Lights</h1>
+      <h1 class="text-4xl md:text-6xl font-light font-serif mb-4">
+          Celestial Lights
+      </h1>
       <p class="max-w-2xl mx-auto text-sm md:text-base leading-relaxed opacity-90">
         One-of-a-kind pieces, designed in private consultation and made especially for you.
       </p>
@@ -32,19 +33,37 @@
     </div>
   </section>
 
+  <section class="max-w-7xl mx-auto px-5 md:px-10 py-16 md:py-20">
+    <div class="h-px w-full bg-[linear-gradient(90deg,transparent,rgba(22,20,17,0.12),transparent)]"></div>
+    <div class="grid gap-8 md:grid-cols-[1.15fr_0.85fr] md:items-start py-10 md:py-14">
+      <div>
+        <p class="section-label mb-4">The Collection Mood</p>
+        <h2 class="text-3xl md:text-[4.25rem] font-light leading-[1.01] tracking-[0.01em]">
+          A restrained visual language, built around clarity and presence.
+        </h2>
+      </div>
+      <div class="md:pt-2 text-sm md:text-base text-charcoal/68 leading-7">
+        Each piece is presented with space, calm, and detail so the client experience feels closer to a private appointment than to a busy storefront.
+      </div>
+    </div>
+    <div class="h-px w-full bg-[linear-gradient(90deg,transparent,rgba(22,20,17,0.12),transparent)]"></div>
+  </section>
+
   <!-- ICONIC PIECES GRID -->
-  <section class="max-w-7xl mx-auto px-4 md:px-8 py-16" id="iconic">
-    <header class="text-center mb-10">
-      <h2 class="text-2xl md:text-3xl font-light tracking-wide font-serif">Bespoke Creations</h2>
-      <p class="mt-3 text-neutral-600">
-        Each design shown here began as a conversation and was made for one person.
+  <section class="max-w-7xl mx-auto px-5 md:px-10 pb-20 md:pb-24" id="iconic">
+    <header class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between mb-10">
+      <div>
+        <p class="section-label mb-3">Selected Works</p>
+        <h2 class="text-3xl md:text-[3.65rem] font-light tracking-[0.01em] leading-none">Bespoke Creations</h2>
+      </div>
+      <p class="max-w-xl text-sm md:text-base text-charcoal/66 leading-7">
+        A small edit of commissions and concept pieces that signal proportion, craftsmanship, and a more personal pace of luxury.
       </p>
     </header>
 
-    {% load static %}
-    <div class="grid md:grid-cols-3 gap-8">
+    <div class="grid gap-x-6 gap-y-12 md:grid-cols-3">
       {% for p in products %}
-        <div class="group rounded-2xl border border-neutral-200/60 overflow-hidden">
+        <article class="group">
           <a
             href="{% url 'product_detail' p.category.slug p.slug %}"
             data-inquiry
@@ -52,53 +71,72 @@
             data-product-title="{{ p.product_name }}"
             class="block"
           >
-            <div class="relative overflow-hidden aspect-[3/4] bg-neutral-100">
-              <img
-                src="{{ p.images.url }}"
-                alt="{{ p.product_name }}"
-                loading="lazy" decoding="async"
-                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                onerror="this.src='{% static 'webshop/img/placeholder-600x800.jpg' %}'"
-              >
-            </div>
-            <div class="p-4 text-center items-center justify-between">
-              <h3 class="font-light tracking-wider text-neutral-800 underline decoration-transparent group-hover:decoration-inherit">
-                {{ p.product_name }}
-              </h3>
-              {# Optional: small hint it's bespoke #}
-              {# <span class="text-xs tracking-wider opacity-70">MADE TO ORDER</span> #}
+            <div class="relative overflow-hidden rounded-[28px] bg-white shadow-[0_18px_60px_rgba(22,20,17,0.08)] transition-transform duration-500 group-hover:-translate-y-1">
+              <div class="relative aspect-[3/4] overflow-hidden bg-neutral-100">
+                <img
+                  src="{{ p.images.url }}"
+                  alt="{{ p.product_name }}"
+                  loading="lazy" decoding="async"
+                  class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                  onerror="this.src='{% static 'webshop/img/placeholder-600x800.jpg' %}'"
+                >
+                <div class="absolute inset-0 bg-gradient-to-t from-charcoal/20 via-transparent to-transparent opacity-80"></div>
+              </div>
+              <div class="p-5 md:p-6">
+                <p class="section-label mb-3">Private Inquiry</p>
+                <h3 class="min-h-[3.8rem] text-lg md:text-[1.55rem] font-light tracking-[0.01em] text-charcoal leading-tight">
+                  {{ p.product_name }}
+                </h3>
+                <div class="mt-5 text-[11px] uppercase tracking-[0.28em] text-charcoal/52">
+                  <span class="transition-colors duration-300 group-hover:text-charcoal">Private Inquiry</span>
+                </div>
+              </div>
             </div>
           </a>
-        </div>
+        </article>
       {% empty %}
         <p class="text-neutral-500">
           New bespoke pieces are currently in progress. Contact us to begin your own.
         </p>
       {% endfor %}
     </div>
-    <br><br>
+  </section>
 
-    <!-- Editorial Block -->
-    <section class="max-w-7xl mx-auto px-4 md:px-8 pb-20">
-      <div class="grid md:grid-cols-2 gap-10 items-center">
-        <div class="relative overflow-hidden bg-neutral-100 rounded-xl">
-          <img
-            src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1500&auto=format&fit=crop"
-            alt="Jewelry atelier"
-            class="w-full h-full object-cover"
-            loading="lazy" decoding="async"
-          >
-        </div>
-        <div class="md:pl-6">
-          <p class="tracking-[0.3em] text-xs mb-3 text-neutral-500">PERSONAL CONSULTATION</p>
-          <h3 class="text-2xl md:text-3xl font-light mb-4 font-serif">Created Around You</h3>
-          <p class="text-neutral-700 leading-7">
-            We begin with a quiet conversation: how you live, what you love, how you wear your jewelry.
-            From there, we sketch, select stones and refine the details until the piece feels uniquely yours.
+  <section class="max-w-7xl mx-auto px-5 md:px-10 pb-24">
+    <div class="grid gap-10 md:grid-cols-[0.9fr_1.1fr] md:items-center">
+      <div>
+        <p class="section-label mb-4">Private Commissioning</p>
+        <h3 class="text-3xl md:text-[3.25rem] font-light tracking-[0.01em] leading-[1.04]">The conversation comes first.</h3>
+        <p class="mt-5 text-sm md:text-base text-charcoal/68 leading-7">
+          The process begins with lifestyle, references, occasion, and proportion. Stones and settings follow only after the direction feels exact.
+        </p>
+        <a
+          href="#"
+          data-inquiry
+          data-product-id="lux-process"
+          data-product-title="Commission consultation"
+          class="btn-dark mt-8"
+        >
+          Begin the Conversation
+        </a>
+      </div>
+      <div class="relative overflow-hidden rounded-[32px] min-h-[380px]">
+        <img
+          src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1500&auto=format&fit=crop"
+          alt="Jewelry atelier"
+          class="absolute inset-0 h-full w-full object-cover"
+          loading="lazy" decoding="async"
+        >
+        <div class="absolute inset-0 bg-gradient-to-r from-charcoal/75 via-charcoal/35 to-transparent"></div>
+        <div class="relative z-10 flex h-full max-w-md flex-col justify-end p-8 md:p-10 text-white">
+          <p class="section-label !text-white/60 mb-3">Consultation Atmosphere</p>
+          <h3 class="text-2xl md:text-[2.7rem] font-light tracking-[0.01em] leading-[1.08]">Designed around how the piece should feel when worn.</h3>
+          <p class="mt-4 text-sm md:text-base text-white/82 leading-7">
+            A quieter, more editorial experience intended for clients who prefer tailored guidance rather than transactional browsing.
           </p>
         </div>
       </div>
-    </section>
+    </div>
   </section>
 
   {% include "webshop/includes/footer.html" %}
